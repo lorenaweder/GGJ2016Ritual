@@ -8,15 +8,19 @@ public class Actor : MonoBehaviour {
 	public float attack;
 	public float defense;
 
+	public Transform transform;
 	public SpriteRenderer[] runes;
-	public Animator attackProjectile;
+	public Projectile projectile;
+	float attackProjectileForce = 5f;
 
 	public Shield fireShield, waterShield, airShield, earthShield;
+	public Transform playerHitEnemy;
 
 	protected float recoveryTime = 0f;
 	protected float connectTime = 0f;
 	protected float animationTime = 0f;
 
+	public AttackHitInfo ? hitInfo {get; private set;}
 	protected Elements currentAttackType;
 	protected Elements currentDefenseType;
 	Dictionary<Elements, Shield> shields = new Dictionary<Elements, Shield>();
@@ -194,12 +198,14 @@ public class Actor : MonoBehaviour {
 	void UpdateAttacking(float deltaTime)
 	{
 		Debug.Log("Animation playing");
+		UpdateProjectile(deltaTime);
 		animationTime -= deltaTime;
 		if(animationTime <= 0)
 		{
 			animationTime = 0;
 			currentState = ActorStates.RECOVERY;
-		}	
+			return;
+		}
 	}
 
 	void UpdateShowing(float deltaTime)
@@ -214,8 +220,21 @@ public class Actor : MonoBehaviour {
 		}
 	}
 
-	public virtual void TakeHit(Elements attackElement, int attack)
+	public void HideProjectile()
 	{
+		projectile.Hide();
+	}
+
+	void UpdateProjectile(float deltaTime)
+	{
+		projectile.rigidBody.AddForce(projectile.transform.right * attackProjectileForce);
+	}
+
+	public void TakeHit(AttackHitInfo? hit)
+	{
+		if(hit == null)
+			return;
+			
 		switch(currentDefenseType)
 		{
 		case Elements.NONE:
@@ -233,15 +252,16 @@ public class Actor : MonoBehaviour {
 	{
 		currentState = ActorStates.SHOWING;
 		currentAttackType = Elements.FIRE;
-		connectTime = 0.2f;
+		connectTime = 0.5f;
 		attackOrDefenseAction = FireAttack;
 	}
 
 	void FireAttack()
 	{
 		Debug.Log("Perform FIRE ATTACK");
-		attackProjectile.SetTrigger("fire");
-		animationTime = .5f;
+		projectile.Show();
+		projectile.animator.SetTrigger("fire");
+		animationTime = 1f;
 		recoveryTime = .7f;
 	}
 
@@ -249,14 +269,15 @@ public class Actor : MonoBehaviour {
 	{
 		currentState = ActorStates.SHOWING;
 		currentAttackType = Elements.WATER;
-		connectTime = 0.2f;
+		connectTime = 0.5f;
 		attackOrDefenseAction = WaterAttack;
 	}
 
 	void WaterAttack()
 	{
 		Debug.Log("Perform WATER ATTACK");
-		attackProjectile.SetTrigger("water");
+		projectile.Show();
+		projectile.animator.SetTrigger("water");
 		animationTime = .5f;
 		recoveryTime = .7f;
 	}
@@ -265,14 +286,15 @@ public class Actor : MonoBehaviour {
 	{
 		currentState = ActorStates.SHOWING;
 		currentAttackType = Elements.AIR;
-		connectTime = 0.2f;
+		connectTime = 0.5f;
 		attackOrDefenseAction = AirAttack;
 	}
 
 	void AirAttack()
 	{
 		Debug.Log("Perform AIR ATTACK");
-		attackProjectile.SetTrigger("air");
+		projectile.Show();
+		projectile.animator.SetTrigger("air");
 		animationTime = .5f;
 		recoveryTime = .7f;
 	}
@@ -281,14 +303,15 @@ public class Actor : MonoBehaviour {
 	{
 		currentState = ActorStates.SHOWING;
 		currentAttackType = Elements.EARTH;
-		connectTime = 0.2f;
+		connectTime = 0.5f;
 		attackOrDefenseAction = EarthAttack;
 	}
 
 	void EarthAttack()
 	{
 		Debug.Log("Perform EARTH ATTACK");
-		attackProjectile.SetTrigger("earth");
+		projectile.Show();
+		projectile.animator.SetTrigger("earth");
 		animationTime = .5f;
 		recoveryTime = .7f;
 	}
@@ -307,14 +330,14 @@ public class Actor : MonoBehaviour {
 	{
 		LowerPreviousShield();
 		currentState = ActorStates.SHOWING;
-		connectTime = 0.2f;
+		connectTime = 0.5f;
 		attackOrDefenseAction = FireShieldUp;
 	}
 
 	void FireShieldUp()
 	{
 		currentDefenseType = Elements.FIRE;
-		shields[currentDefenseType].RiseShield();
+		RiseShield();
 		animationTime = .5f;
 		recoveryTime = .7f;
 	}
@@ -323,15 +346,25 @@ public class Actor : MonoBehaviour {
 	{
 		LowerPreviousShield();
 		currentState = ActorStates.SHOWING;
-		connectTime = 0.2f;
+		connectTime = 0.5f;
 		attackOrDefenseAction = WaterShieldUp;
 	}
 
 	void WaterShieldUp()
 	{
 		currentDefenseType = Elements.WATER;
-		shields[currentDefenseType].RiseShield();
+		RiseShield();
 		animationTime = .5f;
 		recoveryTime = .7f;
 	}
+
+
+	void RiseShield()
+	{
+		shields[currentDefenseType].enabled = true;
+		shields[currentDefenseType].RiseShield();
+	}
+
+	// HITS
+
 }

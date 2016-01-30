@@ -10,6 +10,12 @@
 	}
 }
 
+public struct AttackHitInfo
+{
+	Elements element;
+	int attack;
+}
+
 public enum Buttons
 {
 	NONE,
