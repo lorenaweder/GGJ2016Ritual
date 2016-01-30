@@ -43,6 +43,7 @@ public class Actor : MonoBehaviour {
 		playerInput = GetComponent<PlayerInput>();
 
 		attackOrDefenseAction = DoNothing;
+		hitInfo = new AttackHitInfo?();
 
 		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.FIRE.GetHashCode(), InitFireAttack);
 		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.FIRE.GetHashCode(), InitFireDefense);
@@ -144,7 +145,7 @@ public class Actor : MonoBehaviour {
 	{
 		for(int i=0; i<runes.Length;++i)
 		{
-			runes[i].sprite = null;
+			runes[i].sprite = Game.runeByLetter[Letters.NONE];
 		}
 		Debug.Log("Quitar letras visualmente");
 	}
@@ -198,6 +199,9 @@ public class Actor : MonoBehaviour {
 
 	void UpdateAttacking(float deltaTime)
 	{
+
+//		hitInfo
+
 		Debug.Log("Animation playing");
 		UpdateProjectile(deltaTime);
 		animationTime -= deltaTime;
@@ -260,8 +264,8 @@ public class Actor : MonoBehaviour {
 	void FireAttack()
 	{
 		Debug.Log("Perform FIRE ATTACK");
-		projectile.Show();
-		projectile.animator.SetTrigger("fire");
+		projectile.Show(currentAttackType);
+		
 		animationTime = 1f;
 		recoveryTime = .7f;
 	}
@@ -277,8 +281,7 @@ public class Actor : MonoBehaviour {
 	void WaterAttack()
 	{
 		Debug.Log("Perform WATER ATTACK");
-		projectile.Show();
-		projectile.animator.SetTrigger("water");
+		projectile.Show(currentAttackType);
 		animationTime = 1f;
 		recoveryTime = .7f;
 	}
@@ -294,8 +297,7 @@ public class Actor : MonoBehaviour {
 	void AirAttack()
 	{
 		Debug.Log("Perform AIR ATTACK");
-		projectile.Show();
-		projectile.animator.SetTrigger("air");
+		projectile.Show(currentAttackType);
 		animationTime = 1f;
 		recoveryTime = .7f;
 	}
@@ -311,8 +313,7 @@ public class Actor : MonoBehaviour {
 	void EarthAttack()
 	{
 		Debug.Log("Perform EARTH ATTACK");
-		projectile.Show();
-		projectile.animator.SetTrigger("earth");
+		projectile.Show(currentAttackType);
 		animationTime = 1f;
 		recoveryTime = .7f;
 	}

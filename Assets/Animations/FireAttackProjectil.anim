@@ -22,11 +22,6 @@ AnimationClip:
         inSlope: {x: 45.9375, y: 0, z: 0}
         outSlope: {x: 45.9375, y: 0, z: 0}
         tangentMode: 0
-      - time: 0.16
-        value: {x: 8.75, y: 0.11, z: 0}
-        inSlope: {x: 45.9375, y: 0, z: 0}
-        outSlope: {x: 45.9375, y: 0, z: 0}
-        tangentMode: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -38,11 +33,6 @@ AnimationClip:
       m_Curve:
       - time: 0
         value: 1
-        inSlope: Infinity
-        outSlope: Infinity
-        tangentMode: 31
-      - time: 0.16
-        value: 0
         inSlope: Infinity
         outSlope: Infinity
         tangentMode: 31
@@ -79,7 +69,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.16
+    m_StopTime: 0
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -103,11 +93,6 @@ AnimationClip:
         inSlope: 45.9375
         outSlope: 45.9375
         tangentMode: 10
-      - time: 0.16
-        value: 8.75
-        inSlope: 45.9375
-        outSlope: 45.9375
-        tangentMode: 10
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -119,11 +104,6 @@ AnimationClip:
       serializedVersion: 2
       m_Curve:
       - time: 0
-        value: 0.11
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 10
-      - time: 0.16
         value: 0.11
         inSlope: 0
         outSlope: 0
@@ -143,11 +123,6 @@ AnimationClip:
         inSlope: 0
         outSlope: 0
         tangentMode: 10
-      - time: 0.16
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 10
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -160,11 +135,6 @@ AnimationClip:
       m_Curve:
       - time: 0
         value: 1
-        inSlope: Infinity
-        outSlope: Infinity
-        tangentMode: 31
-      - time: 0.16
-        value: 0
         inSlope: Infinity
         outSlope: Infinity
         tangentMode: 31
