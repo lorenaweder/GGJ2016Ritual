@@ -4,12 +4,14 @@ using System.Collections.Generic;
 
 public class Actor : MonoBehaviour {
 
-	public int health;
-	public int attack;
-	public int defense;
+	public float health;
+	public float attack;
+	public float defense;
 
 	public SpriteRenderer[] runes;
 	public Animator attackProjectile;
+
+	public Shield fireShield, waterShield, airShield, earthShield;
 
 	protected float recoveryTime = 0f;
 	protected float connectTime = 0f;
@@ -17,6 +19,7 @@ public class Actor : MonoBehaviour {
 
 	protected Elements currentAttackType;
 	protected Elements currentDefenseType;
+	Dictionary<Elements, Shield> shields = new Dictionary<Elements, Shield>();
 
 	protected ActorStates currentState = ActorStates.IDLE;
 
@@ -40,13 +43,19 @@ public class Actor : MonoBehaviour {
 		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.FIRE.GetHashCode(), InitFireDefense);
 
 		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.WATER.GetHashCode(), InitWaterAttack);
-		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.WATER.GetHashCode(), DoNothing);
+		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.WATER.GetHashCode(), InitWaterDefense);
 
 		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.AIR.GetHashCode(), InitAirAttack);
 		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.AIR.GetHashCode(), DoNothing);
 
 		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.EARTH.GetHashCode(), InitEarthAttack);
 		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.EARTH.GetHashCode(), DoNothing);
+
+		shields.Add(Elements.FIRE, fireShield);
+		shields.Add(Elements.WATER, waterShield);
+		shields.Add(Elements.AIR, airShield);
+		shields.Add(Elements.EARTH, earthShield);
+
 	}
 
 	public void CustomUpdate(float deltaTime)
@@ -199,7 +208,6 @@ public class Actor : MonoBehaviour {
 		connectTime -= deltaTime;
 		if(connectTime <= 0)
 		{
-			// lanzar ataque posta
 			connectTime = 0;
 			currentState = ActorStates.ATTACKING;
 			attackOrDefenseAction();
@@ -288,8 +296,42 @@ public class Actor : MonoBehaviour {
 
 	// DEFENSES
 
+	void LowerPreviousShield()
+	{
+		if(currentDefenseType == Elements.NONE)
+			return;
+		shields[currentDefenseType].ResetShield();
+	}
+
 	void InitFireDefense()
 	{
-		
+		LowerPreviousShield();
+		currentState = ActorStates.SHOWING;
+		connectTime = 0.2f;
+		attackOrDefenseAction = FireShieldUp;
+	}
+
+	void FireShieldUp()
+	{
+		currentDefenseType = Elements.FIRE;
+		shields[currentDefenseType].RiseShield();
+		animationTime = .5f;
+		recoveryTime = .7f;
+	}
+
+	void InitWaterDefense()
+	{
+		LowerPreviousShield();
+		currentState = ActorStates.SHOWING;
+		connectTime = 0.2f;
+		attackOrDefenseAction = WaterShieldUp;
+	}
+
+	void WaterShieldUp()
+	{
+		currentDefenseType = Elements.WATER;
+		shields[currentDefenseType].RiseShield();
+		animationTime = .5f;
+		recoveryTime = .7f;
 	}
 }
