@@ -55,4 +55,5 @@ public enum ActorStates
 	IDLE,
 	SHOWING,
 	ATTACKING,
+	RECOVERY
 }

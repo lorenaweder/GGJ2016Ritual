@@ -10,6 +10,7 @@ public class Actor : MonoBehaviour {
 
 	protected float recoveryTime = 0f;
 	protected float connectTime = 0f;
+	protected float animationTime = 0f;
 
 	protected Elements currentAttackType;
 	protected Elements currentDefenseType;
@@ -58,11 +59,13 @@ public class Actor : MonoBehaviour {
 		case ActorStates.ATTACKING:
 			UpdateAttacking(deltaTime);
 			break;
+		case ActorStates.RECOVERY:
+			UpdateRecovery(deltaTime);
+			break;
 		}
 	}
 
-
-	void UpdateIdle(float deltaTime)
+	void UpdateRecovery(float deltaTime)
 	{
 		if(recoveryTime > 0)
 		{
@@ -70,9 +73,15 @@ public class Actor : MonoBehaviour {
 		}
 		else
 		{
-			playerInput.CheckInput();
-			CheckWords();
+			RemoveLetters();
+			currentState = ActorStates.IDLE;
 		}
+	}
+
+	void UpdateIdle(float deltaTime)
+	{
+		playerInput.CheckInput();
+		CheckWords();
 	}
 
 	void CheckWords()
@@ -88,7 +97,7 @@ public class Actor : MonoBehaviour {
 				return;
 
 			word.Enqueue(letterToQueue);
-			AddLetter(0, letterToQueue);
+			AddLetter(word.Count -1, letterToQueue);
 		}
 		else
 		{
@@ -101,13 +110,21 @@ public class Actor : MonoBehaviour {
 			if(availableActions.TryGetValue(combo, out action))
 				action();
 			else
+			{
 				Debug.Log("Option not available");
+				RemoveLetters();
+			}
 		}
 	}
 
 	void AddLetter(int position, Letters letter)
 	{
 		Debug.Log("Llenar letra visualmente: " + position);
+	}
+
+	void RemoveLetters()
+	{
+		Debug.Log("Quitar letras visualmente");
 	}
 
 	Letters GetLetterForInput(Buttons button, int order)
@@ -155,41 +172,39 @@ public class Actor : MonoBehaviour {
 			return Buttons.LEFT;
 
 		return Buttons.NONE;
-
 	}
-		
 
 	void UpdateAttacking(float deltaTime)
 	{
-
+		Debug.Log("Animation playing");
+		animationTime -= deltaTime;
+		if(animationTime <= 0)
+		{
+			animationTime = 0;
+			currentState = ActorStates.RECOVERY;
+		}	
 	}
 
 	void UpdateShowing(float deltaTime)
 	{
+		Debug.Log("Showing my runes");
 		connectTime -= deltaTime;
-		if(connectTime == 0)
+		if(connectTime <= 0)
 		{
 			// lanzar ataque posta
+			connectTime = 0;
 			currentState = ActorStates.ATTACKING;
 			attackOrDefenseAction();
 		}
 	}
 
-	public virtual void TakeHit(Elements element, int attack)
+	public virtual void TakeHit(Elements attackElement, int attack)
 	{
 		switch(currentDefenseType)
 		{
 		case Elements.NONE:
 			// entra todo daño - defensa
 			break;
-		}
-	}
-
-	protected virtual void CalculateDamage(Elements attackType, int attack)
-	{
-		if(currentDefenseType == Elements.NONE)
-		{
-			
 		}
 	}
 
@@ -206,6 +221,8 @@ public class Actor : MonoBehaviour {
 	void FireAttack()
 	{
 		Debug.Log("Perform FIRE ATTACK");
+		animationTime = .5f;
+		recoveryTime = .7f;
 	}
 
 	void InitFireDefense()
