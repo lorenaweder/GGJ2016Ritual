@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class Actor : MonoBehaviour {
 
+	public float orientation;
 	public float health;
 	public float attack;
 	public float defense;
@@ -11,7 +12,7 @@ public class Actor : MonoBehaviour {
 	public Transform transform;
 	public SpriteRenderer[] runes;
 	public Projectile projectile;
-	float attackProjectileForce = 5f;
+	float attackProjectileForce = 7f;
 
 	public Shield fireShield, waterShield, airShield, earthShield;
 	public Transform playerHitEnemy;
@@ -50,10 +51,10 @@ public class Actor : MonoBehaviour {
 		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.WATER.GetHashCode(), InitWaterDefense);
 
 		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.AIR.GetHashCode(), InitAirAttack);
-		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.AIR.GetHashCode(), DoNothing);
+		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.AIR.GetHashCode(), InitAirDefense);
 
 		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.EARTH.GetHashCode(), InitEarthAttack);
-		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.EARTH.GetHashCode(), DoNothing);
+		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.EARTH.GetHashCode(), InitEarthDefense);
 
 		shields.Add(Elements.FIRE, fireShield);
 		shields.Add(Elements.WATER, waterShield);
@@ -227,7 +228,7 @@ public class Actor : MonoBehaviour {
 
 	void UpdateProjectile(float deltaTime)
 	{
-		projectile.rigidBody.AddForce(projectile.transform.right * attackProjectileForce);
+		projectile.rigidBody.AddForce(projectile.transform.right * orientation * attackProjectileForce);
 	}
 
 	public void TakeHit(AttackHitInfo? hit)
@@ -278,7 +279,7 @@ public class Actor : MonoBehaviour {
 		Debug.Log("Perform WATER ATTACK");
 		projectile.Show();
 		projectile.animator.SetTrigger("water");
-		animationTime = .5f;
+		animationTime = 1f;
 		recoveryTime = .7f;
 	}
 
@@ -295,7 +296,7 @@ public class Actor : MonoBehaviour {
 		Debug.Log("Perform AIR ATTACK");
 		projectile.Show();
 		projectile.animator.SetTrigger("air");
-		animationTime = .5f;
+		animationTime = 1f;
 		recoveryTime = .7f;
 	}
 
@@ -312,7 +313,7 @@ public class Actor : MonoBehaviour {
 		Debug.Log("Perform EARTH ATTACK");
 		projectile.Show();
 		projectile.animator.SetTrigger("earth");
-		animationTime = .5f;
+		animationTime = 1f;
 		recoveryTime = .7f;
 	}
 
@@ -353,6 +354,38 @@ public class Actor : MonoBehaviour {
 	void WaterShieldUp()
 	{
 		currentDefenseType = Elements.WATER;
+		RiseShield();
+		animationTime = .5f;
+		recoveryTime = .7f;
+	}
+
+	void InitAirDefense()
+	{
+		LowerPreviousShield();
+		currentState = ActorStates.SHOWING;
+		connectTime = 0.5f;
+		attackOrDefenseAction = AirShieldUp;
+	}
+
+	void AirShieldUp()
+	{
+		currentDefenseType = Elements.AIR;
+		RiseShield();
+		animationTime = .5f;
+		recoveryTime = .7f;
+	}
+
+	void InitEarthDefense()
+	{
+		LowerPreviousShield();
+		currentState = ActorStates.SHOWING;
+		connectTime = 0.5f;
+		attackOrDefenseAction = EarthShieldUp;
+	}
+
+	void EarthShieldUp()
+	{
+		currentDefenseType = Elements.EARTH;
 		RiseShield();
 		animationTime = .5f;
 		recoveryTime = .7f;
