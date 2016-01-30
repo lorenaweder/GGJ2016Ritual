@@ -2,83 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-
-//public enum Actions
-//{
-//	ATTACK,
-//	DEFEND,
-//	BUFF,
-//	DEBUFF
-//}
-//
-//public enum Elements
-//{
-//	FIRE,
-//	WATER,
-//	EARTH,
-//	AIR
-//}
-
-public struct ActionType
-{
-	public Letters action {get; private set;}
-	public Letters element {get; private set;}
-
-	public ActionType(Letters action, Letters element)
-	{
-		this.action = action;
-		this.element = element;
-	}
-}
-
-
-public enum Buttons
-{
-	NONE,
-	UP,
-	DOWN,
-	RIGHT,
-	LEFT
-}
-
-public enum Letters
-{
-	NONE,
-	ATTACK,
-	DEFEND,
-	BUFF,
-	DEBUFF,
-	FIRE,
-	WATER,
-	EARTH,
-	AIR
-}
-
-//class ActionType : IEqualityComparer<ActionType>
-//{
-//	private Letters firstLetter;
-//	private Letters secondLetter;
-//
-//	public ActionType(Letters l1, Letters l2) { firstLetter = l1; secondLetter = l2; }
-//
-//	bool IEqualityComparer<ActionType>.Equals(ActionType a1, ActionType a2)
-//	{
-//		if (a1 == null && a2 == null)
-//			return true;
-//		else if (a1 == null || a2 == null)
-//			return false;
-//		else
-//			return a1.firstLetter.Equals(a2.firstLetter) && a1.secondLetter.Equals(a2.secondLetter);
-//	}
-//
-//	int IEqualityComparer<ActionType>.GetHashCode(ActionType obj)
-//	{
-//		return obj.firstLetter.GetHashCode() ^ obj.secondLetter.GetHashCode();
-//	}
-//
-//}
-
-
 public class Game : MonoBehaviour {
 
 	const int MAX_LETTERS = 2;
@@ -87,14 +10,7 @@ public class Game : MonoBehaviour {
 	Letters letterToQueue;
 	Buttons buttonPressed = Buttons.NONE;
 
-	int keysPressedCount = 0;
-	KeyCode waitForUpCode;
-	bool waitForUp = false;
-
-	bool upPressed 		= false;
-	bool downPressed 	= false;
-	bool leftPressed 	= false;
-	bool rightPressed 	= false;
+	PlayerInput playerInput;
 
 
 	ActionType actionToExecute;
@@ -112,12 +28,18 @@ public class Game : MonoBehaviour {
 //		availableActions.Add(fireDefend.GetHashCode(), 0);
 //		availableActions.Add(waterAttack.GetHashCode(), 0);
 //		availableActions.Add(waterDefend.GetHashCode(), 0);
+
+		playerInput = GetComponent<PlayerInput>();
+
+		Debug.Log(Letters.ATTACK.GetHashCode());
+		Debug.Log(Letters.FIRE.GetHashCode());
+
 		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.FIRE.GetHashCode(), 0);
 	}
 
 	void Update()
 	{
-		CheckInput();
+		playerInput.CheckInput();
 		CheckWords();
 	}
 
@@ -181,93 +103,20 @@ public class Game : MonoBehaviour {
 
 	Buttons GetButton()
 	{
-		if(upPressed)
+		if(playerInput.upPressed)
 			return Buttons.UP;
 
-		if(downPressed)
+		if(playerInput.downPressed)
 			return Buttons.DOWN;
 
-		if(rightPressed)
+		if(playerInput.rightPressed)
 			return Buttons.RIGHT;
 
-		if(leftPressed)
+		if(playerInput.leftPressed)
 			return Buttons.LEFT;
 
 		return Buttons.NONE;
 		
-	}
-
-	void CheckInput()
-	{
-		keysPressedCount = 0;
-		SetAllInputsToFalse();
-
-		if(!waitForUp && Input.GetKeyDown(KeyCode.UpArrow))
-		{
-			upPressed = true;
-			keysPressedCount++;
-
-			waitForUp = true;
-			waitForUpCode = KeyCode.UpArrow;
-		}
-		else if(waitForUp && Input.GetKeyUp(KeyCode.UpArrow) && waitForUpCode == KeyCode.UpArrow)
-		{
-			waitForUp = false;
-		}
-
-		if(!waitForUp && Input.GetKeyDown(KeyCode.DownArrow))
-		{
-			downPressed = true;
-			keysPressedCount++;
-
-			waitForUp = true;
-			waitForUpCode = KeyCode.DownArrow;
-		}
-		else if(waitForUp && Input.GetKeyUp(KeyCode.DownArrow) && waitForUpCode == KeyCode.DownArrow)
-		{
-			waitForUp = false;
-		}
-
-		if(!waitForUp && Input.GetKeyDown(KeyCode.RightArrow))
-		{
-			rightPressed = true;
-			keysPressedCount++;
-
-			waitForUp = true;
-			waitForUpCode = KeyCode.RightArrow;
-		}
-		else if(waitForUp && Input.GetKeyUp(KeyCode.RightArrow) && waitForUpCode == KeyCode.RightArrow)
-		{
-			waitForUp = false;
-		}
-
-		if(!waitForUp && Input.GetKeyDown(KeyCode.LeftArrow))
-		{
-			leftPressed = true;
-			keysPressedCount++;
-
-			waitForUp = true;
-			waitForUpCode = KeyCode.LeftArrow;
-		}
-		else if(waitForUp && Input.GetKeyUp(KeyCode.LeftArrow) && waitForUpCode == KeyCode.LeftArrow)
-		{
-			waitForUp = false;
-		}
-			
-
-		if(keysPressedCount > 1)
-		{
-			SetAllInputsToFalse();
-		}
-			
-	}
-
-	void SetAllInputsToFalse()
-	{
-		upPressed = false;
-		downPressed = false;
-		rightPressed = false;
-		leftPressed = false;
 	}
 
 	void ExecuteAction(ActionType action)

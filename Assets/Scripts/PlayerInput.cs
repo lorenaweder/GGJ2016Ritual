@@ -7,6 +7,11 @@ public class PlayerInput : MonoBehaviour {
 	KeyCode waitForUpCode;
 	bool waitForUp = false;
 
+	public KeyCode upKey 	= KeyCode.UpArrow;
+	public KeyCode downKey 	= KeyCode.DownArrow;
+	public KeyCode rightKey = KeyCode.RightArrow;
+	public KeyCode leftKey 	= KeyCode.LeftArrow;
+
 	public bool upPressed 	{get;private set;}
 	public bool downPressed {get;private set;}
 	public bool leftPressed {get;private set;}
@@ -17,59 +22,59 @@ public class PlayerInput : MonoBehaviour {
 		SetAllInputsToFalse();
 	}
 
-	void CheckInput()
+	public void CheckInput()
 	{
 		keysPressedCount = 0;
 		SetAllInputsToFalse();
 
-		if(!waitForUp && Input.GetKeyDown(KeyCode.UpArrow))
+		if(!waitForUp && Input.GetKeyDown(upKey))
 		{
 			upPressed = true;
 			keysPressedCount++;
 
 			waitForUp = true;
-			waitForUpCode = KeyCode.UpArrow;
+			waitForUpCode = upKey;
 		}
-		else if(waitForUp && Input.GetKeyUp(KeyCode.UpArrow) && waitForUpCode == KeyCode.UpArrow)
+		else if(waitForUp && Input.GetKeyUp(upKey) && waitForUpCode == upKey)
 		{
 			waitForUp = false;
 		}
 
-		if(!waitForUp && Input.GetKeyDown(KeyCode.DownArrow))
+		if(!waitForUp && Input.GetKeyDown(downKey))
 		{
 			downPressed = true;
 			keysPressedCount++;
 
 			waitForUp = true;
-			waitForUpCode = KeyCode.DownArrow;
+			waitForUpCode = downKey;
 		}
-		else if(waitForUp && Input.GetKeyUp(KeyCode.DownArrow) && waitForUpCode == KeyCode.DownArrow)
+		else if(waitForUp && Input.GetKeyUp(downKey) && waitForUpCode == downKey)
 		{
 			waitForUp = false;
 		}
 
-		if(!waitForUp && Input.GetKeyDown(KeyCode.RightArrow))
+		if(!waitForUp && Input.GetKeyDown(rightKey))
 		{
 			rightPressed = true;
 			keysPressedCount++;
 
 			waitForUp = true;
-			waitForUpCode = KeyCode.RightArrow;
+			waitForUpCode = rightKey;
 		}
-		else if(waitForUp && Input.GetKeyUp(KeyCode.RightArrow) && waitForUpCode == KeyCode.RightArrow)
+		else if(waitForUp && Input.GetKeyUp(rightKey) && waitForUpCode == rightKey)
 		{
 			waitForUp = false;
 		}
 
-		if(!waitForUp && Input.GetKeyDown(KeyCode.LeftArrow))
+		if(!waitForUp && Input.GetKeyDown(leftKey))
 		{
 			leftPressed = true;
 			keysPressedCount++;
 
 			waitForUp = true;
-			waitForUpCode = KeyCode.LeftArrow;
+			waitForUpCode = leftKey;
 		}
-		else if(waitForUp && Input.GetKeyUp(KeyCode.LeftArrow) && waitForUpCode == KeyCode.LeftArrow)
+		else if(waitForUp && Input.GetKeyUp(leftKey) && waitForUpCode == leftKey)
 		{
 			waitForUp = false;
 		}
