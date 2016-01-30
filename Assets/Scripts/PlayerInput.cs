@@ -93,5 +93,6 @@ public class PlayerInput : MonoBehaviour {
 		downPressed = false;
 		rightPressed = false;
 		leftPressed = false;
+		waitForUp = false;
 	}
 }

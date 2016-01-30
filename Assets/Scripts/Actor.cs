@@ -8,6 +8,9 @@ public class Actor : MonoBehaviour {
 	public int attack;
 	public int defense;
 
+	public SpriteRenderer[] runes;
+	public Animator attackProjectile;
+
 	protected float recoveryTime = 0f;
 	protected float connectTime = 0f;
 	protected float animationTime = 0f;
@@ -36,13 +39,13 @@ public class Actor : MonoBehaviour {
 		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.FIRE.GetHashCode(), InitFireAttack);
 		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.FIRE.GetHashCode(), InitFireDefense);
 
-		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.WATER.GetHashCode(), DoNothing);
+		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.WATER.GetHashCode(), InitWaterAttack);
 		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.WATER.GetHashCode(), DoNothing);
 
-		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.AIR.GetHashCode(), DoNothing);
+		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.AIR.GetHashCode(), InitAirAttack);
 		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.AIR.GetHashCode(), DoNothing);
 
-		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.EARTH.GetHashCode(), DoNothing);
+		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.EARTH.GetHashCode(), InitEarthAttack);
 		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.EARTH.GetHashCode(), DoNothing);
 	}
 
@@ -119,11 +122,16 @@ public class Actor : MonoBehaviour {
 
 	void AddLetter(int position, Letters letter)
 	{
+		runes[position].sprite = Game.runeByLetter[letter];
 		Debug.Log("Llenar letra visualmente: " + position);
 	}
 
 	void RemoveLetters()
 	{
+		for(int i=0; i<runes.Length;++i)
+		{
+			runes[i].sprite = null;
+		}
 		Debug.Log("Quitar letras visualmente");
 	}
 
@@ -210,6 +218,9 @@ public class Actor : MonoBehaviour {
 
 	void DoNothing(){}
 
+
+	// ATTACKS
+
 	void InitFireAttack()
 	{
 		currentState = ActorStates.SHOWING;
@@ -221,9 +232,61 @@ public class Actor : MonoBehaviour {
 	void FireAttack()
 	{
 		Debug.Log("Perform FIRE ATTACK");
+		attackProjectile.SetTrigger("fire");
 		animationTime = .5f;
 		recoveryTime = .7f;
 	}
+
+	void InitWaterAttack()
+	{
+		currentState = ActorStates.SHOWING;
+		currentAttackType = Elements.WATER;
+		connectTime = 0.2f;
+		attackOrDefenseAction = WaterAttack;
+	}
+
+	void WaterAttack()
+	{
+		Debug.Log("Perform WATER ATTACK");
+		attackProjectile.SetTrigger("water");
+		animationTime = .5f;
+		recoveryTime = .7f;
+	}
+
+	void InitAirAttack()
+	{
+		currentState = ActorStates.SHOWING;
+		currentAttackType = Elements.AIR;
+		connectTime = 0.2f;
+		attackOrDefenseAction = AirAttack;
+	}
+
+	void AirAttack()
+	{
+		Debug.Log("Perform AIR ATTACK");
+		attackProjectile.SetTrigger("air");
+		animationTime = .5f;
+		recoveryTime = .7f;
+	}
+
+	void InitEarthAttack()
+	{
+		currentState = ActorStates.SHOWING;
+		currentAttackType = Elements.EARTH;
+		connectTime = 0.2f;
+		attackOrDefenseAction = EarthAttack;
+	}
+
+	void EarthAttack()
+	{
+		Debug.Log("Perform EARTH ATTACK");
+		attackProjectile.SetTrigger("earth");
+		animationTime = .5f;
+		recoveryTime = .7f;
+	}
+
+
+	// DEFENSES
 
 	void InitFireDefense()
 	{
