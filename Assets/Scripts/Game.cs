@@ -16,6 +16,7 @@ public class Game : MonoBehaviour {
 	public static Dictionary<Letters, Sprite> runeByLetter = new Dictionary<Letters, Sprite>();
 	public static Dictionary<Elements, Sprite> attackByType = new Dictionary<Elements, Sprite>();
 
+	public static SoundManager soundManager;
 
 	void Start()
 	{
@@ -41,6 +42,9 @@ public class Game : MonoBehaviour {
 		defenseParamsByType.Add(Elements.WATER, waterDefenseParams);
 		defenseParamsByType.Add(Elements.AIR, airDefenseParams);
 		defenseParamsByType.Add(Elements.EARTH, earthDefenseParams);
+
+		soundManager.PlayCenterMusic(1);
+
 	}
 
 	void Update()
