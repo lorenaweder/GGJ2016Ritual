@@ -30,8 +30,18 @@ public class SoundManager : MonoBehaviour {
 	private bool musicEnabled;
 	private bool effectsEnabled;
 
-	void Awake(){
-		Game.soundManager = this;
+
+	public static SoundManager instance = null;
+	void Awake()
+	{
+		if(instance != null)
+		{
+			instance.PlayCenterMusic(1);
+			Destroy(this);
+		}
+		instance = this;
+		PlayCenterMusic(0);
+		DontDestroyOnLoad(this);
 	}
 
 	void Start(){

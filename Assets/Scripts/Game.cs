@@ -21,6 +21,8 @@ public class Game : MonoBehaviour {
 
 	void Start()
 	{
+		soundManager = FindObjectOfType<SoundManager>();
+		
 		runeByLetter.Add(Letters.NONE, emptyRune);
 		runeByLetter.Add(Letters.ATTACK, attackRune);
 		runeByLetter.Add(Letters.DEFEND, defenseRune);
