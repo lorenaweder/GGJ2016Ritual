@@ -21,7 +21,7 @@ public class Actor : MonoBehaviour {
 	protected float connectTime = 0f;
 	protected float animationTime = 0f;
 
-	public AttackHitInfo ? hitInfo {get; private set;}
+	public AttackHitInfo hitInfo {get; private set;}
 	protected Elements currentAttackType;
 	protected Elements currentDefenseType;
 	Dictionary<Elements, Shield> shields = new Dictionary<Elements, Shield>();
@@ -43,7 +43,7 @@ public class Actor : MonoBehaviour {
 		playerInput = GetComponent<PlayerInput>();
 
 		attackOrDefenseAction = DoNothing;
-		hitInfo = new AttackHitInfo?();
+		hitInfo = new AttackHitInfo(Elements.NONE, 0);
 
 		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.FIRE.GetHashCode(), InitFireAttack);
 		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.FIRE.GetHashCode(), InitFireDefense);
@@ -199,9 +199,6 @@ public class Actor : MonoBehaviour {
 
 	void UpdateAttacking(float deltaTime)
 	{
-
-//		hitInfo
-
 		Debug.Log("Animation playing");
 		UpdateProjectile(deltaTime);
 		animationTime -= deltaTime;
@@ -235,23 +232,48 @@ public class Actor : MonoBehaviour {
 		projectile.rigidBody.AddForce(projectile.transform.right * orientation * attackProjectileForce);
 	}
 
-	public void TakeHit(AttackHitInfo? hit)
+	public void TakeHit(AttackHitInfo hit)
 	{
-		if(hit == null)
+		if(hit.element == Elements.NONE)
 			return;
-			
-		switch(currentDefenseType)
+
+		Debug.Log("Take Hit");
+
+		float shieldElementals = 1.25f;
+		if(currentDefenseType != Elements.NONE)
+			shieldElementals = shields[currentDefenseType].TakeDamage(hit.element);
+
+		float critChance = 1;
+
+		float totalDamage = (hit.attack / defense) * shieldElementals * critChance;
+		health-= totalDamage;
+
+		Debug.Log("Health: " + health);
+
+		if(health <= 0)
 		{
-		case Elements.NONE:
-			// entra todo daño - defensa
-			break;
+			Debug.Log("ALGUIEN MURIO");
 		}
+
 	}
 
 	void DoNothing(){}
 
 
 	// ATTACKS
+
+	public void CleanHitInfo()
+	{
+		hitInfo.element = Elements.NONE;
+		hitInfo.attack = 0;
+	}
+
+	void AttackCommon()
+	{
+		projectile.Show(currentAttackType);
+		hitInfo.attack = attack;
+		hitInfo.element = currentAttackType;
+	}
 
 	void InitFireAttack()
 	{
@@ -264,8 +286,7 @@ public class Actor : MonoBehaviour {
 	void FireAttack()
 	{
 		Debug.Log("Perform FIRE ATTACK");
-		projectile.Show(currentAttackType);
-		
+		AttackCommon();
 		animationTime = 1f;
 		recoveryTime = .7f;
 	}
@@ -281,7 +302,7 @@ public class Actor : MonoBehaviour {
 	void WaterAttack()
 	{
 		Debug.Log("Perform WATER ATTACK");
-		projectile.Show(currentAttackType);
+		AttackCommon();
 		animationTime = 1f;
 		recoveryTime = .7f;
 	}
@@ -297,7 +318,7 @@ public class Actor : MonoBehaviour {
 	void AirAttack()
 	{
 		Debug.Log("Perform AIR ATTACK");
-		projectile.Show(currentAttackType);
+		AttackCommon();
 		animationTime = 1f;
 		recoveryTime = .7f;
 	}
@@ -313,7 +334,7 @@ public class Actor : MonoBehaviour {
 	void EarthAttack()
 	{
 		Debug.Log("Perform EARTH ATTACK");
-		projectile.Show(currentAttackType);
+		AttackCommon();
 		animationTime = 1f;
 		recoveryTime = .7f;
 	}

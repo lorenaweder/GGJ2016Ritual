@@ -6,7 +6,9 @@ public class AirShield : Shield {
 	void Awake()
 	{
 		this.element = Elements.AIR;
+		strong = Elements.EARTH;
+		weak = Elements.FIRE;
+		equal = Elements.WATER;
 	}
 
-	public override void TakeDamage(Elements type, float attack){}
 }

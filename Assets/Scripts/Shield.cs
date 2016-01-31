@@ -9,6 +9,8 @@ public class Shield : MonoBehaviour {
 	protected float health;
 	public Elements element {get; protected set;}
 
+	protected Elements strong, weak, equal;
+
 	void Start()
 	{
 		ResetShield();
@@ -34,7 +36,17 @@ public class Shield : MonoBehaviour {
 		ResetShield();
 	}
 
-	public virtual void TakeDamage(Elements type, float attack){}
+	public virtual float TakeDamage(Elements type)
+	{
+		if(type == strong)
+			return 0.5f;
+
+		if(type == weak)
+			return 1.5f;
+
+		return 1;	
+	}
+
 	public void UpdateGraphics()
 	{
 		float opacity = health * 100 / maxHealth;

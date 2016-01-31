@@ -10,10 +10,15 @@
 	}
 }
 
-public struct AttackHitInfo
+public class AttackHitInfo
 {
-	Elements element;
-	int attack;
+	public AttackHitInfo(Elements e, float a)
+	{
+		element = e;
+		attack = a;
+	}
+	public Elements element;
+	public float attack;
 }
 
 public enum Buttons
