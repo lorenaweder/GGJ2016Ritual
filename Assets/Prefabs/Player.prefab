@@ -307,8 +307,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 193444}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 1.18, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_LocalPosition: {x: -1.004, y: -1.797, z: 0}
+  m_LocalScale: {x: 0.45765686, y: 0.45765683, z: 0.45765683}
   m_Children: []
   m_Father: {fileID: 441928}
   m_RootOrder: 2
@@ -355,8 +355,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 151970}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.46, y: 1.18, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_LocalPosition: {x: -1.915, y: -1.797, z: 0}
+  m_LocalScale: {x: 0.45365688, y: 0.45365688, z: 0.45365688}
   m_Children: []
   m_Father: {fileID: 441928}
   m_RootOrder: 1
@@ -392,8 +392,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 103454}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -1.82, y: 0.21, z: 0}
+  m_LocalScale: {x: 0.45405462, y: 0.4540546, z: 0.4540546}
   m_Children: []
   m_Father: {fileID: 441928}
   m_RootOrder: 0
@@ -466,7 +466,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190064}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.484, y: -0.40399992, z: 0}
+  m_LocalPosition: {x: -1.51, y: -1.11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 441928}
@@ -684,9 +684,9 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: -0.48073748, y: 0.38859665}
+  m_Offset: {x: -0.37762523, y: 1.2736442}
   serializedVersion: 2
-  m_Size: {x: 1.0000002, y: 0.97596335}
+  m_Size: {x: 1.2062246, y: 2.7460585}
 --- !u!102 &10243796
 TextMesh:
   serializedVersion: 3
@@ -777,7 +777,6 @@ MonoBehaviour:
   healthText: {fileID: 10259088}
   collider: {fileID: 6118500}
   sprite: {fileID: 21237602}
-  maxHealth: 0
 --- !u!114 &11418434
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -792,7 +791,6 @@ MonoBehaviour:
   healthText: {fileID: 10259088}
   collider: {fileID: 6167042}
   sprite: {fileID: 21229708}
-  maxHealth: 0
 --- !u!114 &11427852
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -848,7 +846,6 @@ MonoBehaviour:
   healthText: {fileID: 10259088}
   collider: {fileID: 6160916}
   sprite: {fileID: 21216174}
-  maxHealth: 0
 --- !u!114 &11470508
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -863,7 +860,6 @@ MonoBehaviour:
   healthText: {fileID: 10259088}
   collider: {fileID: 6167186}
   sprite: {fileID: 21265292}
-  maxHealth: 0
 --- !u!114 &11477324
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -987,7 +983,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e5216f32ff5738c449a95b9832d30088, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1f5b7dfd6633199479bde5d1946f45fe, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

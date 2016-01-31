@@ -6,7 +6,7 @@ public class Shield : MonoBehaviour {
 	public TextMesh healthText;
 	public BoxCollider2D collider;
 	public SpriteRenderer sprite;
-	public float maxHealth = 10;
+	float maxHealth = 10;
 	protected float health = 10;
 	public Elements element {get; protected set;}
 
@@ -19,7 +19,7 @@ public class Shield : MonoBehaviour {
 
 	public virtual void RiseShield()
 	{
-		healthText.text = health.ToString();
+		healthText.text = element.ToString() + " " + health.ToString();
 		Debug.Log("Shield UP: " + element);
 		sprite.enabled = true;
 		collider.enabled = true;
@@ -28,6 +28,7 @@ public class Shield : MonoBehaviour {
 	public void ResetShield()
 	{
 		Debug.Log("Reset shield");
+		health = maxHealth;
 		sprite.enabled = false;	
 		collider.enabled = false;
 		healthText.text = "";
@@ -39,32 +40,36 @@ public class Shield : MonoBehaviour {
 		ResetShield();
 	}
 
-	public virtual float TakeDamage(Elements type)
+	public virtual float TakeDamage(Elements type, out bool shieldDied)
 	{
 		if(type == strong)
 		{
 			health -= 1;
-			CheckLife();
+			shieldDied = CheckLife();
 			return 0.5f;
 		}
 
 		if(type == weak)
 		{
 			health -= 10;
-			CheckLife();
+			shieldDied = CheckLife();
 			return 1.5f;
 		}
 
 		health -= 5;
-		CheckLife();
+		shieldDied = CheckLife();
 		return 1;	
 	}
 
-	void CheckLife()
+	bool CheckLife()
 	{
-		healthText.text = health.ToString();
+		healthText.text = element.ToString() + " " + health.ToString();
 		if(health <= 0)
+		{
 			DestroyShield();
+			return true;
+		}
+		return false;
 	}
 
 	public void UpdateGraphics()

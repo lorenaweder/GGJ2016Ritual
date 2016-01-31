@@ -67,7 +67,11 @@ public class Actor : MonoBehaviour {
 		shields.Add(Elements.WATER, waterShield);
 		shields.Add(Elements.AIR, airShield);
 		shields.Add(Elements.EARTH, earthShield);
+	}
 
+	void Start()
+	{
+		RemoveLetters();
 	}
 
 	public void CustomUpdate(float deltaTime)
@@ -153,6 +157,7 @@ public class Actor : MonoBehaviour {
 
 	void AddLetter(int position, Letters letter)
 	{
+		runes[position].color = new Color(1f,1f,1f,1f);
 		runes[position].sprite = Game.runeByLetter[letter];
 		Debug.Log("Llenar letra visualmente: " + position);
 	}
@@ -161,9 +166,9 @@ public class Actor : MonoBehaviour {
 	{
 		for(int i=0; i<runes.Length;++i)
 		{
+			runes[i].color = new Color(1f, 1f, 1f, .4f);
 			runes[i].sprite = Game.runeByLetter[Letters.NONE];
 		}
-		Debug.Log("Quitar letras visualmente");
 	}
 
 	Letters GetLetterForInput(Buttons button, int order)
@@ -253,11 +258,14 @@ public class Actor : MonoBehaviour {
 		if(hit.element == Elements.NONE)
 			return;
 
-		Debug.Log("Take Hit");
+		Debug.Log("<color=red>Take Hit, " + currentDefenseType+"</color>");
 
+		bool shieldDestroyed = false;
 		float shieldElementals = 1.25f;
 		if(currentDefenseType != Elements.NONE)
-			shieldElementals = shields[currentDefenseType].TakeDamage(hit.element);
+		{
+			shieldElementals = shields[currentDefenseType].TakeDamage(hit.element, out shieldDestroyed);
+		}
 
 		float critChance = 1;
 
@@ -266,7 +274,10 @@ public class Actor : MonoBehaviour {
 		minusText.text = totalDamage.ToString();
 		healthText.text = health.ToString();
 
-		Debug.Log("Health: " + health);
+		if(shieldDestroyed)
+		{
+			currentDefenseType = Elements.NONE;
+		}
 
 		if(health <= 0)
 		{
@@ -297,6 +308,9 @@ public class Actor : MonoBehaviour {
 	void AttackAction()
 	{
 		projectile.Show(currentAttackType);
+
+		projectile.rigidBody.AddForce(projectile.transform.right * orientation * 10f, ForceMode2D.Impulse);
+
 		hitInfo.attack = attack;
 		hitInfo.element = currentAttackType;
 
@@ -312,6 +326,7 @@ public class Actor : MonoBehaviour {
 		if(currentDefenseType == Elements.NONE)
 			return;
 		shields[currentDefenseType].ResetShield();
+		currentDefenseType = Elements.NONE;
 	}
 
 	void InitDefense(Elements element)

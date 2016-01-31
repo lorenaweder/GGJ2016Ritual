@@ -10,9 +10,4 @@ public class FireShield : Shield {
 		weak = Elements.WATER;
 		equal = Elements.EARTH;
 	}
-
-	public override float TakeDamage(Elements type)
-	{
-		return 0;
-	}
 }
