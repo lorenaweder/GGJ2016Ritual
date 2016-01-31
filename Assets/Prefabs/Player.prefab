@@ -16,6 +16,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &105928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 421106}
+  - 23: {fileID: 2391926}
+  - 102: {fileID: 10264964}
+  m_Layer: 0
+  m_Name: Minus
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &116828
 GameObject:
   m_ObjectHideFlags: 0
@@ -146,7 +163,7 @@ GameObject:
   - 23: {fileID: 2365422}
   - 102: {fileID: 10259088}
   m_Layer: 0
-  m_Name: Minus
+  m_Name: ShieldHealth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -302,11 +319,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 179414}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.13000011, y: 3.75, z: 0}
+  m_LocalPosition: {x: 0.13000011, y: 5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 441928}
-  m_RootOrder: 10
+  m_RootOrder: 11
 --- !u!4 &419220
 Transform:
   m_ObjectHideFlags: 1
@@ -319,6 +336,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 446944}
   m_RootOrder: 0
+--- !u!4 &421106
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 105928}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.13000011, y: 3.75, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 441928}
+  m_RootOrder: 10
 --- !u!4 &424010
 Transform:
   m_ObjectHideFlags: 1
@@ -401,6 +430,7 @@ Transform:
   - {fileID: 458652}
   - {fileID: 451298}
   - {fileID: 463566}
+  - {fileID: 421106}
   - {fileID: 418548}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -510,6 +540,32 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 179414}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_Materials:
+  - {fileID: 10100, guid: 0000000000000000e000000000000000, type: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 1
+  m_ReflectionProbeUsage: 1
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+--- !u!23 &2391926
+MeshRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 105928}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -659,6 +715,27 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 179414}
+  m_Text: 
+  m_OffsetZ: 0
+  m_CharacterSize: 0.1
+  m_LineSpacing: 1
+  m_Anchor: 4
+  m_Alignment: 0
+  m_TabSize: 4
+  m_FontSize: 56
+  m_FontStyle: 0
+  m_RichText: 1
+  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Color:
+    serializedVersion: 2
+    rgba: 4294967295
+--- !u!102 &10264964
+TextMesh:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 105928}
   m_Text: Hello World
   m_OffsetZ: 0
   m_CharacterSize: 0.1
@@ -697,6 +774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97a14064c39526d40b192f9b5265e390, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthText: {fileID: 10259088}
   collider: {fileID: 6118500}
   sprite: {fileID: 21237602}
   maxHealth: 0
@@ -711,6 +789,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e78310de34fb0554c81ebbf82dce9e3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthText: {fileID: 10259088}
   collider: {fileID: 6167042}
   sprite: {fileID: 21229708}
   maxHealth: 0
@@ -766,6 +845,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a6f07ac879ccee4096c3a80bfe87595, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthText: {fileID: 10259088}
   collider: {fileID: 6160916}
   sprite: {fileID: 21216174}
   maxHealth: 0
@@ -780,6 +860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 199e573e53e63f647803214a61e85a42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthText: {fileID: 10259088}
   collider: {fileID: 6167186}
   sprite: {fileID: 21265292}
   maxHealth: 0
@@ -834,17 +915,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5cf84f9477b4374fb6b81e558426c9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  orientation: 1
   health: 6
   attack: 10
   defense: 5
+  orientation: 1
   transform: {fileID: 441928}
   runes:
   - {fileID: 21216694}
   - {fileID: 21207422}
   projectile: {fileID: 11487168}
   healthText: {fileID: 10243796}
-  minusText: {fileID: 10259088}
+  minusText: {fileID: 10264964}
   fireShield: {fileID: 11413778}
   waterShield: {fileID: 11418434}
   airShield: {fileID: 11470508}

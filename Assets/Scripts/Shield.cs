@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Shield : MonoBehaviour { 
 
+	public TextMesh healthText;
 	public BoxCollider2D collider;
 	public SpriteRenderer sprite;
 	public float maxHealth = 10;
@@ -18,6 +19,7 @@ public class Shield : MonoBehaviour {
 
 	public virtual void RiseShield()
 	{
+		healthText.text = health.ToString();
 		Debug.Log("Shield UP: " + element);
 		sprite.enabled = true;
 		collider.enabled = true;
@@ -28,6 +30,7 @@ public class Shield : MonoBehaviour {
 		Debug.Log("Reset shield");
 		sprite.enabled = false;	
 		collider.enabled = false;
+		healthText.text = "";
 	}
 
 	public virtual void DestroyShield()
@@ -59,6 +62,7 @@ public class Shield : MonoBehaviour {
 
 	void CheckLife()
 	{
+		healthText.text = health.ToString();
 		if(health <= 0)
 			DestroyShield();
 	}

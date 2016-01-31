@@ -1,9 +1,19 @@
-﻿public struct ActionType
+﻿[System.Serializable]
+public class ADParams
 {
-	public Letters action {get; private set;}
-	public Letters element {get; private set;}
+	public Elements element;
+	public float recoveryTime = 0f;
+	public float connectTime = 0f;
+	public float animationTime = 0f;
+	public float projectileSpeed = 0f;
+}
 
-	public ActionType(Letters action, Letters element)
+public struct ActionType
+{
+	public Actions action {get; private set;}
+	public Elements element {get; private set;}
+
+	public ActionType(Actions action, Elements element)
 	{
 		this.action = action;
 		this.element = element;

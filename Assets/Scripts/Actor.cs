@@ -2,30 +2,29 @@
 using System.Collections;
 using System.Collections.Generic;
 
+
 public class Actor : MonoBehaviour {
 
-	public float orientation;
 	public float health;
 	public float attack;
 	public float defense;
 
+	public float orientation;
+
 	public Transform transform;
 	public SpriteRenderer[] runes;
 	public Projectile projectile;
-	float attackProjectileForce = 7f;
 
 	public TextMesh healthText, minusText;
 
 	public Shield fireShield, waterShield, airShield, earthShield;
 	public Transform playerHitEnemy;
 
-	protected float recoveryTime = 0f;
-	protected float connectTime = 0f;
-	protected float animationTime = 0f;
 
 	public AttackHitInfo hitInfo {get; private set;}
-	protected Elements currentAttackType;
-	protected Elements currentDefenseType;
+	Elements currentAttackType;
+	ADParams currentActionParams;
+	Elements currentDefenseType;
 	Dictionary<Elements, Shield> shields = new Dictionary<Elements, Shield>();
 
 	protected ActorStates currentState = ActorStates.IDLE;
@@ -36,7 +35,7 @@ public class Actor : MonoBehaviour {
 	Buttons buttonPressed = Buttons.NONE;
 
 	System.Action attackOrDefenseAction;
-	Dictionary<int, System.Action> availableActions = new Dictionary<int, System.Action>(16);
+	Dictionary<int, ActionType> availableActions = new Dictionary<int, ActionType>(16);
 
 	PlayerInput playerInput;
 
@@ -47,20 +46,22 @@ public class Actor : MonoBehaviour {
 		healthText.text = health.ToString();
 		minusText.text = "";
 
+		currentActionParams = new ADParams();
+
 		attackOrDefenseAction = DoNothing;
 		hitInfo = new AttackHitInfo(Elements.NONE, 0);
 
-		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.FIRE.GetHashCode(), InitFireAttack);
-		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.FIRE.GetHashCode(), InitFireDefense);
+		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.FIRE.GetHashCode(), new ActionType(Actions.ATTACK, Elements.FIRE));
+		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.FIRE.GetHashCode(), new ActionType(Actions.DEFEND, Elements.FIRE));
 
-		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.WATER.GetHashCode(), InitWaterAttack);
-		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.WATER.GetHashCode(), InitWaterDefense);
+		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.WATER.GetHashCode(), new ActionType(Actions.ATTACK, Elements.WATER));
+		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.WATER.GetHashCode(), new ActionType(Actions.DEFEND, Elements.WATER));
 
-		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.AIR.GetHashCode(), InitAirAttack);
-		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.AIR.GetHashCode(), InitAirDefense);
+		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.AIR.GetHashCode(), new ActionType(Actions.ATTACK, Elements.AIR));
+		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.AIR.GetHashCode(), new ActionType(Actions.DEFEND, Elements.AIR));
 
-		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.EARTH.GetHashCode(), InitEarthAttack);
-		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.EARTH.GetHashCode(), InitEarthDefense);
+		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.EARTH.GetHashCode(), new ActionType(Actions.ATTACK, Elements.EARTH));
+		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.EARTH.GetHashCode(), new ActionType(Actions.DEFEND, Elements.EARTH));
 
 		shields.Add(Elements.FIRE, fireShield);
 		shields.Add(Elements.WATER, waterShield);
@@ -90,9 +91,9 @@ public class Actor : MonoBehaviour {
 
 	void UpdateRecovery(float deltaTime)
 	{
-		if(recoveryTime > 0)
+		if(currentActionParams.recoveryTime > 0)
 		{
-			recoveryTime -= deltaTime;
+			currentActionParams.recoveryTime -= deltaTime;
 		}
 		else
 		{
@@ -128,10 +129,20 @@ public class Actor : MonoBehaviour {
 			l1 = word.Dequeue();
 			l2 = word.Dequeue();
 			int combo = l1.GetHashCode() + l2.GetHashCode();
-			System.Action action = DoNothing;
+			ActionType action;
 
 			if(availableActions.TryGetValue(combo, out action))
-				action();
+			{
+				switch(action.action)
+				{
+				case Actions.ATTACK:
+					InitAttack(action.element);
+					break;
+				case Actions.DEFEND:
+					InitDefense(action.element);
+					break;
+				}
+			}	
 			else
 			{
 				Debug.Log("Option not available");
@@ -206,10 +217,10 @@ public class Actor : MonoBehaviour {
 	{
 		Debug.Log("Animation playing");
 		UpdateProjectile(deltaTime);
-		animationTime -= deltaTime;
-		if(animationTime <= 0)
+		currentActionParams.animationTime -= deltaTime;
+		if(currentActionParams.animationTime <= 0)
 		{
-			animationTime = 0;
+			currentActionParams.animationTime = 0;
 			currentState = ActorStates.RECOVERY;
 			return;
 		}
@@ -218,10 +229,10 @@ public class Actor : MonoBehaviour {
 	void UpdateShowing(float deltaTime)
 	{
 		Debug.Log("Showing my runes");
-		connectTime -= deltaTime;
-		if(connectTime <= 0)
+		currentActionParams.connectTime -= deltaTime;
+		if(currentActionParams.connectTime <= 0)
 		{
-			connectTime = 0;
+			currentActionParams.connectTime = 0;
 			currentState = ActorStates.ATTACKING;
 			attackOrDefenseAction();
 		}
@@ -234,7 +245,7 @@ public class Actor : MonoBehaviour {
 
 	void UpdateProjectile(float deltaTime)
 	{
-		projectile.rigidBody.AddForce(projectile.transform.right * orientation * attackProjectileForce);
+		projectile.rigidBody.AddForce(projectile.transform.right * orientation * currentActionParams.projectileSpeed);
 	}
 
 	public void TakeHit(AttackHitInfo hit)
@@ -274,78 +285,25 @@ public class Actor : MonoBehaviour {
 		hitInfo.element = Elements.NONE;
 		hitInfo.attack = 0;
 	}
+		
+	void InitAttack(Elements element)
+	{
+		currentState = ActorStates.SHOWING;
+		attackOrDefenseAction = AttackAction;
+		currentAttackType = element;
+		currentActionParams.connectTime = Game.attackParamsByType[currentAttackType].connectTime;
+	}
 
-	void AttackCommon()
+	void AttackAction()
 	{
 		projectile.Show(currentAttackType);
 		hitInfo.attack = attack;
 		hitInfo.element = currentAttackType;
-	}
 
-	void InitFireAttack()
-	{
-		currentState = ActorStates.SHOWING;
-		currentAttackType = Elements.FIRE;
-		connectTime = 0.5f;
-		attackOrDefenseAction = FireAttack;
+		currentActionParams.projectileSpeed = Game.attackParamsByType[currentAttackType].projectileSpeed;
+		currentActionParams.animationTime = Game.attackParamsByType[currentAttackType].animationTime;
+		currentActionParams.recoveryTime = Game.attackParamsByType[currentAttackType].recoveryTime;
 	}
-
-	void FireAttack()
-	{
-		Debug.Log("Perform FIRE ATTACK");
-		AttackCommon();
-		animationTime = 1f;
-		recoveryTime = .7f;
-	}
-
-	void InitWaterAttack()
-	{
-		currentState = ActorStates.SHOWING;
-		currentAttackType = Elements.WATER;
-		connectTime = 0.5f;
-		attackOrDefenseAction = WaterAttack;
-	}
-
-	void WaterAttack()
-	{
-		Debug.Log("Perform WATER ATTACK");
-		AttackCommon();
-		animationTime = 1f;
-		recoveryTime = .7f;
-	}
-
-	void InitAirAttack()
-	{
-		currentState = ActorStates.SHOWING;
-		currentAttackType = Elements.AIR;
-		connectTime = 0.5f;
-		attackOrDefenseAction = AirAttack;
-	}
-
-	void AirAttack()
-	{
-		Debug.Log("Perform AIR ATTACK");
-		AttackCommon();
-		animationTime = 1f;
-		recoveryTime = .7f;
-	}
-
-	void InitEarthAttack()
-	{
-		currentState = ActorStates.SHOWING;
-		currentAttackType = Elements.EARTH;
-		connectTime = 0.5f;
-		attackOrDefenseAction = EarthAttack;
-	}
-
-	void EarthAttack()
-	{
-		Debug.Log("Perform EARTH ATTACK");
-		AttackCommon();
-		animationTime = 1f;
-		recoveryTime = .7f;
-	}
-
 
 	// DEFENSES
 
@@ -356,77 +314,27 @@ public class Actor : MonoBehaviour {
 		shields[currentDefenseType].ResetShield();
 	}
 
-	void InitFireDefense()
+	void InitDefense(Elements element)
 	{
 		LowerPreviousShield();
 		currentState = ActorStates.SHOWING;
-		connectTime = 0.5f;
-		attackOrDefenseAction = FireShieldUp;
+		currentActionParams.connectTime = Game.defenseParamsByType[element].connectTime;
+		currentActionParams.element = element;
+		attackOrDefenseAction = DefenseAction;
 	}
 
-	void FireShieldUp()
+	void DefenseAction()
 	{
-		currentDefenseType = Elements.FIRE;
+		currentDefenseType = currentActionParams.element;
+		currentActionParams.animationTime = Game.defenseParamsByType[currentDefenseType].animationTime;
+		currentActionParams.recoveryTime = Game.defenseParamsByType[currentDefenseType].recoveryTime;
 		RiseShield();
-		animationTime = .5f;
-		recoveryTime = .7f;
 	}
-
-	void InitWaterDefense()
-	{
-		LowerPreviousShield();
-		currentState = ActorStates.SHOWING;
-		connectTime = 0.5f;
-		attackOrDefenseAction = WaterShieldUp;
-	}
-
-	void WaterShieldUp()
-	{
-		currentDefenseType = Elements.WATER;
-		RiseShield();
-		animationTime = .5f;
-		recoveryTime = .7f;
-	}
-
-	void InitAirDefense()
-	{
-		LowerPreviousShield();
-		currentState = ActorStates.SHOWING;
-		connectTime = 0.5f;
-		attackOrDefenseAction = AirShieldUp;
-	}
-
-	void AirShieldUp()
-	{
-		currentDefenseType = Elements.AIR;
-		RiseShield();
-		animationTime = .5f;
-		recoveryTime = .7f;
-	}
-
-	void InitEarthDefense()
-	{
-		LowerPreviousShield();
-		currentState = ActorStates.SHOWING;
-		connectTime = 0.5f;
-		attackOrDefenseAction = EarthShieldUp;
-	}
-
-	void EarthShieldUp()
-	{
-		currentDefenseType = Elements.EARTH;
-		RiseShield();
-		animationTime = .5f;
-		recoveryTime = .7f;
-	}
-
 
 	void RiseShield()
 	{
 		shields[currentDefenseType].enabled = true;
 		shields[currentDefenseType].RiseShield();
 	}
-
-	// HITS
-
+		
 }
