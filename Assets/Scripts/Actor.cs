@@ -4,19 +4,24 @@ using System.Collections.Generic;
 
 public class Actor : MonoBehaviour {
 
+	public float orientation;
 	public float health;
 	public float attack;
 	public float defense;
 
+	public Transform transform;
 	public SpriteRenderer[] runes;
-	public Animator attackProjectile;
+	public Projectile projectile;
+	float attackProjectileForce = 7f;
 
 	public Shield fireShield, waterShield, airShield, earthShield;
+	public Transform playerHitEnemy;
 
 	protected float recoveryTime = 0f;
 	protected float connectTime = 0f;
 	protected float animationTime = 0f;
 
+	public AttackHitInfo hitInfo {get; private set;}
 	protected Elements currentAttackType;
 	protected Elements currentDefenseType;
 	Dictionary<Elements, Shield> shields = new Dictionary<Elements, Shield>();
@@ -38,6 +43,7 @@ public class Actor : MonoBehaviour {
 		playerInput = GetComponent<PlayerInput>();
 
 		attackOrDefenseAction = DoNothing;
+		hitInfo = new AttackHitInfo(Elements.NONE, 0);
 
 		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.FIRE.GetHashCode(), InitFireAttack);
 		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.FIRE.GetHashCode(), InitFireDefense);
@@ -46,10 +52,10 @@ public class Actor : MonoBehaviour {
 		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.WATER.GetHashCode(), InitWaterDefense);
 
 		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.AIR.GetHashCode(), InitAirAttack);
-		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.AIR.GetHashCode(), DoNothing);
+		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.AIR.GetHashCode(), InitAirDefense);
 
 		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.EARTH.GetHashCode(), InitEarthAttack);
-		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.EARTH.GetHashCode(), DoNothing);
+		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.EARTH.GetHashCode(), InitEarthDefense);
 
 		shields.Add(Elements.FIRE, fireShield);
 		shields.Add(Elements.WATER, waterShield);
@@ -139,7 +145,7 @@ public class Actor : MonoBehaviour {
 	{
 		for(int i=0; i<runes.Length;++i)
 		{
-			runes[i].sprite = null;
+			runes[i].sprite = Game.runeByLetter[Letters.NONE];
 		}
 		Debug.Log("Quitar letras visualmente");
 	}
@@ -194,12 +200,14 @@ public class Actor : MonoBehaviour {
 	void UpdateAttacking(float deltaTime)
 	{
 		Debug.Log("Animation playing");
+		UpdateProjectile(deltaTime);
 		animationTime -= deltaTime;
 		if(animationTime <= 0)
 		{
 			animationTime = 0;
 			currentState = ActorStates.RECOVERY;
-		}	
+			return;
+		}
 	}
 
 	void UpdateShowing(float deltaTime)
@@ -214,14 +222,39 @@ public class Actor : MonoBehaviour {
 		}
 	}
 
-	public virtual void TakeHit(Elements attackElement, int attack)
+	public void HideProjectile()
 	{
-		switch(currentDefenseType)
+		projectile.Hide();
+	}
+
+	void UpdateProjectile(float deltaTime)
+	{
+		projectile.rigidBody.AddForce(projectile.transform.right * orientation * attackProjectileForce);
+	}
+
+	public void TakeHit(AttackHitInfo hit)
+	{
+		if(hit.element == Elements.NONE)
+			return;
+
+		Debug.Log("Take Hit");
+
+		float shieldElementals = 1.25f;
+		if(currentDefenseType != Elements.NONE)
+			shieldElementals = shields[currentDefenseType].TakeDamage(hit.element);
+
+		float critChance = 1;
+
+		float totalDamage = (hit.attack / defense) * shieldElementals * critChance;
+		health-= totalDamage;
+
+		Debug.Log("Health: " + health);
+
+		if(health <= 0)
 		{
-		case Elements.NONE:
-			// entra todo daño - defensa
-			break;
+			Debug.Log("ALGUIEN MURIO");
 		}
+
 	}
 
 	void DoNothing(){}
@@ -229,19 +262,32 @@ public class Actor : MonoBehaviour {
 
 	// ATTACKS
 
+	public void CleanHitInfo()
+	{
+		hitInfo.element = Elements.NONE;
+		hitInfo.attack = 0;
+	}
+
+	void AttackCommon()
+	{
+		projectile.Show(currentAttackType);
+		hitInfo.attack = attack;
+		hitInfo.element = currentAttackType;
+	}
+
 	void InitFireAttack()
 	{
 		currentState = ActorStates.SHOWING;
 		currentAttackType = Elements.FIRE;
-		connectTime = 0.2f;
+		connectTime = 0.5f;
 		attackOrDefenseAction = FireAttack;
 	}
 
 	void FireAttack()
 	{
 		Debug.Log("Perform FIRE ATTACK");
-		attackProjectile.SetTrigger("fire");
-		animationTime = .5f;
+		AttackCommon();
+		animationTime = 1f;
 		recoveryTime = .7f;
 	}
 
@@ -249,15 +295,15 @@ public class Actor : MonoBehaviour {
 	{
 		currentState = ActorStates.SHOWING;
 		currentAttackType = Elements.WATER;
-		connectTime = 0.2f;
+		connectTime = 0.5f;
 		attackOrDefenseAction = WaterAttack;
 	}
 
 	void WaterAttack()
 	{
 		Debug.Log("Perform WATER ATTACK");
-		attackProjectile.SetTrigger("water");
-		animationTime = .5f;
+		AttackCommon();
+		animationTime = 1f;
 		recoveryTime = .7f;
 	}
 
@@ -265,15 +311,15 @@ public class Actor : MonoBehaviour {
 	{
 		currentState = ActorStates.SHOWING;
 		currentAttackType = Elements.AIR;
-		connectTime = 0.2f;
+		connectTime = 0.5f;
 		attackOrDefenseAction = AirAttack;
 	}
 
 	void AirAttack()
 	{
 		Debug.Log("Perform AIR ATTACK");
-		attackProjectile.SetTrigger("air");
-		animationTime = .5f;
+		AttackCommon();
+		animationTime = 1f;
 		recoveryTime = .7f;
 	}
 
@@ -281,15 +327,15 @@ public class Actor : MonoBehaviour {
 	{
 		currentState = ActorStates.SHOWING;
 		currentAttackType = Elements.EARTH;
-		connectTime = 0.2f;
+		connectTime = 0.5f;
 		attackOrDefenseAction = EarthAttack;
 	}
 
 	void EarthAttack()
 	{
 		Debug.Log("Perform EARTH ATTACK");
-		attackProjectile.SetTrigger("earth");
-		animationTime = .5f;
+		AttackCommon();
+		animationTime = 1f;
 		recoveryTime = .7f;
 	}
 
@@ -307,14 +353,14 @@ public class Actor : MonoBehaviour {
 	{
 		LowerPreviousShield();
 		currentState = ActorStates.SHOWING;
-		connectTime = 0.2f;
+		connectTime = 0.5f;
 		attackOrDefenseAction = FireShieldUp;
 	}
 
 	void FireShieldUp()
 	{
 		currentDefenseType = Elements.FIRE;
-		shields[currentDefenseType].RiseShield();
+		RiseShield();
 		animationTime = .5f;
 		recoveryTime = .7f;
 	}
@@ -323,15 +369,57 @@ public class Actor : MonoBehaviour {
 	{
 		LowerPreviousShield();
 		currentState = ActorStates.SHOWING;
-		connectTime = 0.2f;
+		connectTime = 0.5f;
 		attackOrDefenseAction = WaterShieldUp;
 	}
 
 	void WaterShieldUp()
 	{
 		currentDefenseType = Elements.WATER;
-		shields[currentDefenseType].RiseShield();
+		RiseShield();
 		animationTime = .5f;
 		recoveryTime = .7f;
 	}
+
+	void InitAirDefense()
+	{
+		LowerPreviousShield();
+		currentState = ActorStates.SHOWING;
+		connectTime = 0.5f;
+		attackOrDefenseAction = AirShieldUp;
+	}
+
+	void AirShieldUp()
+	{
+		currentDefenseType = Elements.AIR;
+		RiseShield();
+		animationTime = .5f;
+		recoveryTime = .7f;
+	}
+
+	void InitEarthDefense()
+	{
+		LowerPreviousShield();
+		currentState = ActorStates.SHOWING;
+		connectTime = 0.5f;
+		attackOrDefenseAction = EarthShieldUp;
+	}
+
+	void EarthShieldUp()
+	{
+		currentDefenseType = Elements.EARTH;
+		RiseShield();
+		animationTime = .5f;
+		recoveryTime = .7f;
+	}
+
+
+	void RiseShield()
+	{
+		shields[currentDefenseType].enabled = true;
+		shields[currentDefenseType].RiseShield();
+	}
+
+	// HITS
+
 }

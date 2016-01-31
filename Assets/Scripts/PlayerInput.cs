@@ -9,8 +9,8 @@ public class PlayerInput : MonoBehaviour {
 
 	public KeyCode upKey 	= KeyCode.UpArrow;
 	public KeyCode downKey 	= KeyCode.DownArrow;
-	public KeyCode rightKey = KeyCode.RightArrow;
-	public KeyCode leftKey 	= KeyCode.LeftArrow;
+	public KeyCode rightKey = KeyCode.LeftArrow;
+	public KeyCode leftKey 	= KeyCode.RightArrow;
 
 	public bool upPressed 	{get;private set;}
 	public bool downPressed {get;private set;}

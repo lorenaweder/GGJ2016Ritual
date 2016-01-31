@@ -6,7 +6,9 @@ public class EarthShield : Shield {
 	void Awake()
 	{
 		this.element = Elements.EARTH;
+		strong = Elements.WATER;
+		weak = Elements.AIR;
+		equal = Elements.EARTH;
 	}
 
-	public override void TakeDamage(Elements type, float attack){}
 }

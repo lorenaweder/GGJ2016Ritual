@@ -10,6 +10,17 @@
 	}
 }
 
+public class AttackHitInfo
+{
+	public AttackHitInfo(Elements e, float a)
+	{
+		element = e;
+		attack = a;
+	}
+	public Elements element;
+	public float attack;
+}
+
 public enum Buttons
 {
 	NONE,

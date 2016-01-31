@@ -4,18 +4,27 @@ using System.Collections.Generic;
 
 public class Game : MonoBehaviour {
 
-	public Sprite attackRune, defenseRune, fireRune, waterRune, airRune, earthRune;
+	public Sprite emptyRune, attackRune, defenseRune, fireRune, waterRune, airRune, earthRune;
+	public Sprite fireAttack, waterAttack, airAttack, earthAttack;
 	public Actor[] players;
 	public static Dictionary<Letters, Sprite> runeByLetter = new Dictionary<Letters, Sprite>();
+	public static Dictionary<Elements, Sprite> attackByType = new Dictionary<Elements, Sprite>();
+
 
 	void Start()
 	{
+		runeByLetter.Add(Letters.NONE, emptyRune);
 		runeByLetter.Add(Letters.ATTACK, attackRune);
 		runeByLetter.Add(Letters.DEFEND, defenseRune);
 		runeByLetter.Add(Letters.FIRE, fireRune);
 		runeByLetter.Add(Letters.WATER, waterRune);
 		runeByLetter.Add(Letters.AIR, airRune);
 		runeByLetter.Add(Letters.EARTH, earthRune);
+
+		attackByType.Add(Elements.FIRE, fireAttack);
+		attackByType.Add(Elements.WATER, waterAttack);
+		attackByType.Add(Elements.AIR, airAttack);
+		attackByType.Add(Elements.EARTH, earthAttack);
 	}
 
 	void Update()
