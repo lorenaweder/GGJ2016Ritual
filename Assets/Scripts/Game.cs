@@ -17,6 +17,7 @@ public class Game : MonoBehaviour {
 	public static Dictionary<Elements, Sprite> attackByType = new Dictionary<Elements, Sprite>();
 
 	public static SoundManager soundManager;
+	public static GameManager gameManager;
 
 	void Start()
 	{
@@ -49,10 +50,15 @@ public class Game : MonoBehaviour {
 
 	void Update()
 	{
+		if(Input.GetKeyDown(KeyCode.Escape))
+		{
+			gameManager.QuitToMenu();
+			return;
+		}
+		
 		for(int i = 0; i < players.Length; ++i)
 		{
 			players[i].CustomUpdate(Time.deltaTime);
 		}
 	}
-
 }

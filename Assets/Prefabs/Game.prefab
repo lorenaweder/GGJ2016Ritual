@@ -55,52 +55,52 @@ MonoBehaviour:
   - {fileID: 0}
   fireAttackParams:
     element: 1
-    recoveryTime: 0.7
+    recoveryTime: 0.2
     connectTime: 0.5
     animationTime: 1
     projectileSpeed: 7
   waterAttackParams:
     element: 2
-    recoveryTime: 0
-    connectTime: 0
-    animationTime: 0
-    projectileSpeed: 0
+    recoveryTime: 0.2
+    connectTime: 0.5
+    animationTime: 1
+    projectileSpeed: 7
   airAttackParams:
     element: 4
-    recoveryTime: 0
-    connectTime: 0
-    animationTime: 0
-    projectileSpeed: 0
+    recoveryTime: 0.2
+    connectTime: 0.5
+    animationTime: 1
+    projectileSpeed: 7
   earthAttackParams:
     element: 3
-    recoveryTime: 0
-    connectTime: 0
-    animationTime: 0
-    projectileSpeed: 0
+    recoveryTime: 0.2
+    connectTime: 0.5
+    animationTime: 1
+    projectileSpeed: 7
   fireDefenseParams:
     element: 1
-    recoveryTime: 0
-    connectTime: 0
-    animationTime: 0
-    projectileSpeed: 0
+    recoveryTime: 0.2
+    connectTime: 0.1
+    animationTime: 1
+    projectileSpeed: 7
   waterDefenseParams:
     element: 2
-    recoveryTime: 0
-    connectTime: 0
-    animationTime: 0
-    projectileSpeed: 0
+    recoveryTime: 0.2
+    connectTime: 0.1
+    animationTime: 1
+    projectileSpeed: 7
   airDefenseParams:
     element: 4
-    recoveryTime: 0
-    connectTime: 0
-    animationTime: 0
-    projectileSpeed: 0
+    recoveryTime: 0.2
+    connectTime: 0.1
+    animationTime: 1
+    projectileSpeed: 7
   earthDefenseParams:
     element: 3
-    recoveryTime: 0
-    connectTime: 0
-    animationTime: 0
-    projectileSpeed: 0
+    recoveryTime: 0.2
+    connectTime: 0.1
+    animationTime: 1
+    projectileSpeed: 7
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

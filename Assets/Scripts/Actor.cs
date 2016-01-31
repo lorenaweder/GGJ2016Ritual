@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class Actor : MonoBehaviour {
 
 	public float health;
+	float maxHealth;
 	public float attack;
 	public float defense;
 
@@ -39,10 +40,15 @@ public class Actor : MonoBehaviour {
 
 	PlayerInput playerInput;
 
+	public Transform healthBar;
+	public SpriteRenderer spriteRenderer;
+	public Sprite idle, rune1a, rune1d, rune2;
+
 	void Awake()
 	{
 		playerInput = GetComponent<PlayerInput>();
 
+		maxHealth = health;
 		healthText.text = health.ToString();
 		minusText.text = "";
 
@@ -126,6 +132,11 @@ public class Actor : MonoBehaviour {
 
 			word.Enqueue(letterToQueue);
 			AddLetter(word.Count -1, letterToQueue);
+
+			if(word.Peek() == Letters.ATTACK)
+				spriteRenderer.sprite = rune1a;
+			else
+				spriteRenderer.sprite = rune1d;
 		}
 		else
 		{
@@ -146,6 +157,7 @@ public class Actor : MonoBehaviour {
 					InitDefense(action.element);
 					break;
 				}
+				spriteRenderer.sprite = rune2;
 			}	
 			else
 			{
@@ -227,6 +239,7 @@ public class Actor : MonoBehaviour {
 		{
 			currentActionParams.animationTime = 0;
 			currentState = ActorStates.RECOVERY;
+			spriteRenderer.sprite = idle;
 			return;
 		}
 	}
@@ -274,6 +287,8 @@ public class Actor : MonoBehaviour {
 		minusText.text = totalDamage.ToString();
 		healthText.text = health.ToString();
 
+		UpdateHealthBar();
+
 		if(shieldDestroyed)
 		{
 			currentDefenseType = Elements.NONE;
@@ -281,13 +296,23 @@ public class Actor : MonoBehaviour {
 
 		if(health <= 0)
 		{
-			Debug.Log("ALGUIEN MURIO");
+			health = 0;
+			Game.gameManager.Lost(orientation);
 		}
+
+		Game.soundManager.PlayPlayerHit();
 
 	}
 
 	void DoNothing(){}
 
+	void UpdateHealthBar()
+	{
+//		healthBar.scale
+		float n1 = health / maxHealth;
+		float val = n1*5.45f;
+		healthBar.localScale = new Vector3(val, healthBar.localScale.y, healthBar.localScale.z);
+	}
 
 	// ATTACKS
 
@@ -317,6 +342,8 @@ public class Actor : MonoBehaviour {
 		currentActionParams.projectileSpeed = Game.attackParamsByType[currentAttackType].projectileSpeed;
 		currentActionParams.animationTime = Game.attackParamsByType[currentAttackType].animationTime;
 		currentActionParams.recoveryTime = Game.attackParamsByType[currentAttackType].recoveryTime;
+
+		Game.soundManager.PlayElementSound(currentAttackType);
 	}
 
 	// DEFENSES

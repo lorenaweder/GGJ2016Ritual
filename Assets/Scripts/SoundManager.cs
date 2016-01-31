@@ -24,7 +24,6 @@ public class SoundManager : MonoBehaviour {
 	protected float defaultMusicVolume = 1f;
 
 	public AudioClip[] gameSfx;
-	//public LoopingMusicTheme mainTheme;
 	public AudioClip[] bkgMusic;
 	public AudioClip buttonEffect;
 
@@ -80,18 +79,11 @@ public class SoundManager : MonoBehaviour {
 				src.Play();
 		}
 	}
-	
-	public void PlayMusicEffect(AudioClip musicEffectClip, float volume = 1f){
-		volume = (musicEnabled) ? volume : 0;
-		musicSource.PlayOneShot(musicEffectClip, volume);
-	}
 
 	public void PlaySoundEffect(int index, float volume = 1f){
 		if(index >= gameSfx.Length)
 			return;
-		effectsSource.pitch = Random.Range(minPitch, maxPitch);
-		volume = (effectsEnabled) ? volume : 0;
-		effectsSource.PlayOneShot(gameSfx[index], volume);
+		effectsSource.PlayOneShot(gameSfx[index], 1);
 	}
 
 	public void PlaySoundEffect(AudioClip effectClip, float volume = 1f){
@@ -135,25 +127,6 @@ public class SoundManager : MonoBehaviour {
 		}
 	}
 	
-
-//	public void StartMusic(){
-//		StartCoroutine("PlayIntroMusic");
-//	}
-
-//	protected IEnumerator PlayIntroMusic(){
-//		
-//		musicSource.PlayOneShot(mainTheme.introClip);
-//		
-//		float timeToContinue = Time.realtimeSinceStartup + mainTheme.introClip.length;
-//		while (Time.realtimeSinceStartup < timeToContinue)
-//		{
-//			yield return null;
-//		}
-//		
-//		PlayCenterMusic();
-//		yield break;
-//	}
-	
 	public void PlayCenterMusic(int index){
 		//StopCoroutine("PlayIntroMusic");
 		musicSource.volume = .2f;
@@ -165,12 +138,6 @@ public class SoundManager : MonoBehaviour {
 	public void playButtonEffect(){
 		PlaySoundEffect(buttonEffect);
 	}
-	
-//	public void PlayEndMusic(){
-//		musicSource.loop = false;
-//		musicSource.Stop();
-//		musicSource.PlayOneShot(mainTheme.finalClip);
-//	}
 	
 
 
@@ -196,5 +163,27 @@ public class SoundManager : MonoBehaviour {
 		src.loop = false;
 		src.Stop();
 		src.clip = null;
-	}	
+	}
+
+	public void PlayElementSound(Elements element) {
+		switch (element) {
+			case Elements.FIRE:
+				PlaySoundEffect (0);
+				break;
+			case Elements.EARTH:
+				PlaySoundEffect (1);
+				break;
+			case Elements.WATER:
+				PlaySoundEffect (2);
+				break;
+			case Elements.AIR:
+				PlaySoundEffect (3);
+				break;
+		}
+	}
+
+	public void PlayPlayerHit() {
+		PlaySoundEffect ((int)Random.Range (4, 6));
+	}
+
 }
