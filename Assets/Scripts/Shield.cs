@@ -5,8 +5,8 @@ public class Shield : MonoBehaviour {
 
 	public BoxCollider2D collider;
 	public SpriteRenderer sprite;
-	public float maxHealth;
-	protected float health;
+	public float maxHealth = 10;
+	protected float health = 10;
 	public Elements element {get; protected set;}
 
 	protected Elements strong, weak, equal;
@@ -39,12 +39,28 @@ public class Shield : MonoBehaviour {
 	public virtual float TakeDamage(Elements type)
 	{
 		if(type == strong)
+		{
+			health -= 1;
+			CheckLife();
 			return 0.5f;
+		}
 
 		if(type == weak)
+		{
+			health -= 10;
+			CheckLife();
 			return 1.5f;
+		}
 
+		health -= 5;
+		CheckLife();
 		return 1;	
+	}
+
+	void CheckLife()
+	{
+		if(health <= 0)
+			DestroyShield();
 	}
 
 	public void UpdateGraphics()

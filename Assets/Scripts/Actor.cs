@@ -14,6 +14,8 @@ public class Actor : MonoBehaviour {
 	public Projectile projectile;
 	float attackProjectileForce = 7f;
 
+	public TextMesh healthText, minusText;
+
 	public Shield fireShield, waterShield, airShield, earthShield;
 	public Transform playerHitEnemy;
 
@@ -41,6 +43,9 @@ public class Actor : MonoBehaviour {
 	void Awake()
 	{
 		playerInput = GetComponent<PlayerInput>();
+
+		healthText.text = health.ToString();
+		minusText.text = "";
 
 		attackOrDefenseAction = DoNothing;
 		hitInfo = new AttackHitInfo(Elements.NONE, 0);
@@ -247,6 +252,8 @@ public class Actor : MonoBehaviour {
 
 		float totalDamage = (hit.attack / defense) * shieldElementals * critChance;
 		health-= totalDamage;
+		minusText.text = totalDamage.ToString();
+		healthText.text = health.ToString();
 
 		Debug.Log("Health: " + health);
 
