@@ -37,7 +37,7 @@ public class SoundManager : MonoBehaviour {
 		if(instance != null)
 		{
 			instance.PlayCenterMusic(1);
-			Destroy(this);
+			Destroy(instance.gameObject);
 		}
 		instance = this;
 		PlayCenterMusic(0);

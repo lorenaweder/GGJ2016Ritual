@@ -298,6 +298,7 @@ public class Actor : MonoBehaviour {
 		{
 			health = 0;
 			Game.gameManager.Lost(orientation);
+			return;
 		}
 
 		Game.soundManager.PlayPlayerHit();

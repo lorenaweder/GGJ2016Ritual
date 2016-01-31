@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour {
 
 	public void Lost(float player)
 	{
+		Debug.Log("dafuwasdasdkjhsadkjhsadjkashdkjhaskdjhkasjdhka");
+		Game.gameOver = true;
 		if(player > 1)
 			SceneManager.LoadScene("WinP2");
 		else

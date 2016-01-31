@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class Game : MonoBehaviour {
 
+	public static bool gameOver = false;
 	public Sprite emptyRune, attackRune, defenseRune, fireRune, waterRune, airRune, earthRune;
 	public Sprite fireAttack, waterAttack, airAttack, earthAttack;
 	public Actor[] players;
@@ -57,7 +58,9 @@ public class Game : MonoBehaviour {
 			gameManager.QuitToMenu();
 			return;
 		}
-		
+
+		if(gameOver)
+			return;
 		for(int i = 0; i < players.Length; ++i)
 		{
 			players[i].CustomUpdate(Time.deltaTime);
