@@ -7,7 +7,8 @@ public class PlayerHit : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D coll)
 	{
-		Debug.Log("Hit");
+		if(Game.gameOver)
+			return;
 		enemy.HideProjectile();
 		player.TakeHit(enemy.hitInfo);
 		enemy.CleanHitInfo();

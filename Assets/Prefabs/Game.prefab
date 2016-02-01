@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &169464
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 471082}
+  - 114: {fileID: 11440080}
+  m_Layer: 0
+  m_Name: Game
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &471082
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 169464}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11440080
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 169464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 454da4ac4f41a3a4c992dde0dc7d5aaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  emptyRune: {fileID: 21300000, guid: 4a5d2d84b57802b4b969314ce6036bf5, type: 3}
+  attackRune: {fileID: 21300000, guid: 8616fd107c4166647b95bab8bf10561e, type: 3}
+  defenseRune: {fileID: 21300000, guid: d23404fb63511c84482772d5d1a86f12, type: 3}
+  fireRune: {fileID: 21300000, guid: e453556cb51bbee4f834b5829d23c255, type: 3}
+  waterRune: {fileID: 21300000, guid: 98178eae158a5b24b8ebe97652b4dcf9, type: 3}
+  airRune: {fileID: 21300000, guid: a1ed58fcead8fdc4baf9b1b49b3070c5, type: 3}
+  earthRune: {fileID: 21300000, guid: 4792f62128271a448a77f38209ab7070, type: 3}
+  fireAttack: {fileID: 21300000, guid: ba690df9008186c4f94256543979876d, type: 3}
+  waterAttack: {fileID: 21300000, guid: 969d81786a543ef48972890c517d8d5a, type: 3}
+  airAttack: {fileID: 21300000, guid: e910fc1cb30c78145a1342736c7ed702, type: 3}
+  earthAttack: {fileID: 21300000, guid: 99bc7fa4a39ccf645a830cfa239a129a, type: 3}
+  players:
+  - {fileID: 0}
+  - {fileID: 0}
+  fireAttackParams:
+    element: 1
+    recoveryTime: 0.2
+    connectTime: 0.5
+    animationTime: 1
+    projectileSpeed: 7
+  waterAttackParams:
+    element: 2
+    recoveryTime: 0.2
+    connectTime: 0.5
+    animationTime: 1
+    projectileSpeed: 7
+  airAttackParams:
+    element: 4
+    recoveryTime: 0.2
+    connectTime: 0.5
+    animationTime: 1
+    projectileSpeed: 7
+  earthAttackParams:
+    element: 3
+    recoveryTime: 0.2
+    connectTime: 0.5
+    animationTime: 1
+    projectileSpeed: 7
+  fireDefenseParams:
+    element: 1
+    recoveryTime: 0.2
+    connectTime: 0.1
+    animationTime: 1
+    projectileSpeed: 7
+  waterDefenseParams:
+    element: 2
+    recoveryTime: 0.2
+    connectTime: 0.1
+    animationTime: 1
+    projectileSpeed: 7
+  airDefenseParams:
+    element: 4
+    recoveryTime: 0.2
+    connectTime: 0.1
+    animationTime: 1
+    projectileSpeed: 7
+  earthDefenseParams:
+    element: 3
+    recoveryTime: 0.2
+    connectTime: 0.1
+    animationTime: 1
+    projectileSpeed: 7
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: fireAttackParams.animationTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: fireAttackParams.recoveryTime
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: fireAttackParams.connectTime
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: fireAttackParams.projectileSpeed
+      value: 7
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 169464}
+  m_IsPrefabParent: 1
