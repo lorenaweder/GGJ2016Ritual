@@ -8,7 +8,5 @@ public class EarthShield : Shield {
 		this.element = Elements.EARTH;
 		strong = Elements.WATER;
 		weak = Elements.AIR;
-		equal = Elements.EARTH;
 	}
-
 }

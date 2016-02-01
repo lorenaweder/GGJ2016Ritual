@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Game : MonoBehaviour {
 
-	public static bool gameOver = false;
+	public static bool gameOver;
 	public Sprite emptyRune, attackRune, defenseRune, fireRune, waterRune, airRune, earthRune;
 	public Sprite fireAttack, waterAttack, airAttack, earthAttack;
 	public Actor[] players;
@@ -12,17 +12,21 @@ public class Game : MonoBehaviour {
 	public ADParams fireAttackParams, waterAttackParams, airAttackParams, earthAttackParams;
 	public ADParams fireDefenseParams, waterDefenseParams, airDefenseParams, earthDefenseParams;
 
+	public static PlayerActions playerActions;
 	public static Dictionary<Elements, ADParams> attackParamsByType;
 	public static Dictionary<Elements, ADParams> defenseParamsByType;
 	public static Dictionary<Letters, Sprite> runeByLetter;
 	public static Dictionary<Elements, Sprite> attackByType;
 
 	public static SoundManager soundManager;
-	public static GameManager gameManager;
+	public static ScreenManager screenManager;
 
 	void Awake()
 	{	
-	
+		gameOver = false;
+
+		playerActions = new PlayerActions();
+
 		attackParamsByType = new Dictionary<Elements, ADParams>();
 		defenseParamsByType = new Dictionary<Elements, ADParams>();
 		runeByLetter = new Dictionary<Letters, Sprite>();
@@ -57,7 +61,7 @@ public class Game : MonoBehaviour {
 	{
 		if(Input.GetKeyDown(KeyCode.Escape))
 		{
-			gameManager.QuitToMenu();
+			screenManager.QuitToMenu();
 			return;
 		}
 

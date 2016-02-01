@@ -6,41 +6,41 @@ using System.Collections.Generic;
 public class Actor : MonoBehaviour {
 
 	public float health;
-	float maxHealth;
 	public float attack;
 	public float defense;
+	public Transform healthBar;
 
 	public float orientation;
 
-	public Transform transform;
+	public new Transform transform;
 	public SpriteRenderer[] runes;
 	public Projectile projectile;
 
 	public TextMesh healthText, minusText;
 
 	public Shield fireShield, waterShield, airShield, earthShield;
-	public Transform playerHitEnemy;
-
 
 	public AttackHitInfo hitInfo {get; private set;}
 	Elements currentAttackType;
 	ADParams currentActionParams;
 	Elements currentDefenseType;
-	Dictionary<Elements, Shield> shields = new Dictionary<Elements, Shield>();
+	Dictionary<Elements, Shield> shields = new Dictionary<Elements, Shield>(4);
 
 	protected ActorStates currentState = ActorStates.IDLE;
 
 	const int MAX_LETTERS = 2;
-	Queue<Letters> word = new Queue<Letters>();
+	List<Letters> word = new List<Letters>(MAX_LETTERS);
 	Letters letterToQueue;
 	Buttons buttonPressed = Buttons.NONE;
 
 	System.Action attackOrDefenseAction;
-	Dictionary<int, ActionType> availableActions = new Dictionary<int, ActionType>(16);
+	PlayerActions playerActions;
 
 	PlayerInput playerInput;
 
-	public Transform healthBar;
+	float maxHealth;
+	float initialHealthBarScale;
+
 	public SpriteRenderer spriteRenderer;
 	public Sprite idle, rune1a, rune1d, rune2;
 
@@ -48,6 +48,7 @@ public class Actor : MonoBehaviour {
 	{
 		playerInput = GetComponent<PlayerInput>();
 
+		initialHealthBarScale = healthBar.localScale.x;
 		maxHealth = health;
 		healthText.text = health.ToString();
 		minusText.text = "";
@@ -57,18 +58,6 @@ public class Actor : MonoBehaviour {
 		attackOrDefenseAction = DoNothing;
 		hitInfo = new AttackHitInfo(Elements.NONE, 0);
 
-		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.FIRE.GetHashCode(), new ActionType(Actions.ATTACK, Elements.FIRE));
-		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.FIRE.GetHashCode(), new ActionType(Actions.DEFEND, Elements.FIRE));
-
-		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.WATER.GetHashCode(), new ActionType(Actions.ATTACK, Elements.WATER));
-		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.WATER.GetHashCode(), new ActionType(Actions.DEFEND, Elements.WATER));
-
-		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.AIR.GetHashCode(), new ActionType(Actions.ATTACK, Elements.AIR));
-		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.AIR.GetHashCode(), new ActionType(Actions.DEFEND, Elements.AIR));
-
-		availableActions.Add(Letters.ATTACK.GetHashCode() + Letters.EARTH.GetHashCode(), new ActionType(Actions.ATTACK, Elements.EARTH));
-		availableActions.Add(Letters.DEFEND.GetHashCode() + Letters.EARTH.GetHashCode(), new ActionType(Actions.DEFEND, Elements.EARTH));
-
 		shields.Add(Elements.FIRE, fireShield);
 		shields.Add(Elements.WATER, waterShield);
 		shields.Add(Elements.AIR, airShield);
@@ -77,7 +66,8 @@ public class Actor : MonoBehaviour {
 
 	void Start()
 	{
-		RemoveLetters();
+		playerActions = Game.playerActions;
+		RemoveLettersFromScreen();
 	}
 
 	public void CustomUpdate(float deltaTime)
@@ -107,7 +97,7 @@ public class Actor : MonoBehaviour {
 		}
 		else
 		{
-			RemoveLetters();
+			RemoveLettersFromScreen();
 			currentState = ActorStates.IDLE;
 		}
 	}
@@ -120,61 +110,64 @@ public class Actor : MonoBehaviour {
 
 	void CheckWords()
 	{
-		if(word.Count < MAX_LETTERS)
+		buttonPressed = GetButton();
+		if(buttonPressed == Buttons.NONE)
+			return;
+
+		letterToQueue = GetLetterForInput(buttonPressed, word.Count);
+		if(letterToQueue == Letters.NONE)
+			return;
+
+		word.Add(letterToQueue);
+		AddLetterToScreen(word.Count -1, letterToQueue);
+
+		// hc
+		if(word[word.Count -1] == Letters.ATTACK)
+			spriteRenderer.sprite = rune1a;
+		else
+			spriteRenderer.sprite = rune1d;
+
+		int combo = 0;
+		ActionType action;
+
+		for(int i=0; i < word.Count ; ++i)
 		{
-			buttonPressed = GetButton();
-			if(buttonPressed == Buttons.NONE)
-				return;
+			combo += word[i].GetHashCode();
+		}
 
-			letterToQueue = GetLetterForInput(buttonPressed, word.Count);
-			if(letterToQueue == Letters.NONE)
-				return;
+		if(playerActions.available.TryGetValue(combo, out action))
+		{
+			word.Clear();
 
-			word.Enqueue(letterToQueue);
-			AddLetter(word.Count -1, letterToQueue);
-
-			if(word.Peek() == Letters.ATTACK)
-				spriteRenderer.sprite = rune1a;
-			else
-				spriteRenderer.sprite = rune1d;
+			// hc
+			switch(action.action)
+			{
+			case Actions.ATTACK:
+				InitAttack(action.element);
+				break;
+			case Actions.DEFEND:
+				InitDefense(action.element);
+				break;
+			}
+			spriteRenderer.sprite = rune2;
 		}
 		else
 		{
-			Letters l1, l2;
-			l1 = word.Dequeue();
-			l2 = word.Dequeue();
-			int combo = l1.GetHashCode() + l2.GetHashCode();
-			ActionType action;
-
-			if(availableActions.TryGetValue(combo, out action))
+			if(word.Count == MAX_LETTERS)
 			{
-				switch(action.action)
-				{
-				case Actions.ATTACK:
-					InitAttack(action.element);
-					break;
-				case Actions.DEFEND:
-					InitDefense(action.element);
-					break;
-				}
-				spriteRenderer.sprite = rune2;
-			}	
-			else
-			{
-				Debug.Log("Option not available");
-				RemoveLetters();
+				word.Clear();
+				RemoveLettersFromScreen();
 			}
 		}
 	}
 
-	void AddLetter(int position, Letters letter)
+	void AddLetterToScreen(int position, Letters letter)
 	{
 		runes[position].color = new Color(1f,1f,1f,1f);
 		runes[position].sprite = Game.runeByLetter[letter];
-		Debug.Log("Llenar letra visualmente: " + position);
 	}
 
-	void RemoveLetters()
+	void RemoveLettersFromScreen()
 	{
 		for(int i=0; i<runes.Length;++i)
 		{
@@ -194,13 +187,11 @@ public class Actor : MonoBehaviour {
 				return Letters.ATTACK;
 			else
 				return Letters.FIRE;
-			break;
 		case Buttons.LEFT:
 			if(order == 0)
 				return Letters.DEFEND;
 			else
 				return Letters.WATER;
-			break;
 		case Buttons.UP:
 			if(order == 1)
 				return Letters.AIR;
@@ -232,7 +223,6 @@ public class Actor : MonoBehaviour {
 
 	void UpdateAttacking(float deltaTime)
 	{
-		Debug.Log("Animation playing");
 		UpdateProjectile(deltaTime);
 		currentActionParams.animationTime -= deltaTime;
 		if(currentActionParams.animationTime <= 0)
@@ -240,13 +230,11 @@ public class Actor : MonoBehaviour {
 			currentActionParams.animationTime = 0;
 			currentState = ActorStates.RECOVERY;
 			spriteRenderer.sprite = idle;
-			return;
 		}
 	}
 
 	void UpdateShowing(float deltaTime)
 	{
-		Debug.Log("Showing my runes");
 		currentActionParams.connectTime -= deltaTime;
 		if(currentActionParams.connectTime <= 0)
 		{
@@ -256,22 +244,20 @@ public class Actor : MonoBehaviour {
 		}
 	}
 
-	public void HideProjectile()
-	{
-		projectile.Hide();
-	}
-
 	void UpdateProjectile(float deltaTime)
 	{
 		projectile.rigidBody.AddForce(projectile.transform.right * orientation * currentActionParams.projectileSpeed);
+	}
+
+	public void HideProjectile()
+	{
+		projectile.Hide();
 	}
 
 	public void TakeHit(AttackHitInfo hit)
 	{
 		if(hit.element == Elements.NONE)
 			return;
-
-		Debug.Log("<color=red>Take Hit, " + currentDefenseType+"</color>");
 
 		bool shieldDestroyed = false;
 		float shieldElementals = 1.25f;
@@ -297,7 +283,7 @@ public class Actor : MonoBehaviour {
 		if(health <= 0)
 		{
 			health = 0;
-			Game.gameManager.Lost(orientation);
+			Game.screenManager.Lost(orientation);
 			return;
 		}
 
@@ -309,13 +295,12 @@ public class Actor : MonoBehaviour {
 
 	void UpdateHealthBar()
 	{
-//		healthBar.scale
-		float n1 = health / maxHealth;
-		float val = n1*5.45f;
-		healthBar.localScale = new Vector3(val, healthBar.localScale.y, healthBar.localScale.z);
+		float newScaleX = (health / maxHealth) * initialHealthBarScale;
+		if(newScaleX < 0) newScaleX = 0;
+		healthBar.localScale = new Vector3(newScaleX, healthBar.localScale.y, healthBar.localScale.z);
 	}
 
-	// ATTACKS
+	// ATTACK
 
 	public void CleanHitInfo()
 	{
@@ -347,7 +332,7 @@ public class Actor : MonoBehaviour {
 		Game.soundManager.PlayElementSound(currentAttackType);
 	}
 
-	// DEFENSES
+	// DEFENSE
 
 	void LowerPreviousShield()
 	{
@@ -379,5 +364,4 @@ public class Actor : MonoBehaviour {
 		shields[currentDefenseType].enabled = true;
 		shields[currentDefenseType].RiseShield();
 	}
-		
 }

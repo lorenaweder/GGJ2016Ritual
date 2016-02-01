@@ -10,8 +10,8 @@ public class ADParams
 
 public struct ActionType
 {
-	public Actions action {get; private set;}
-	public Elements element {get; private set;}
+	public Actions action;
+	public Elements element;
 
 	public ActionType(Actions action, Elements element)
 	{

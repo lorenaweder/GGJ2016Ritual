@@ -9,7 +9,6 @@ public class PlayerHit : MonoBehaviour {
 	{
 		if(Game.gameOver)
 			return;
-		Debug.Log("Hit");
 		enemy.HideProjectile();
 		player.TakeHit(enemy.hitInfo);
 		enemy.CleanHitInfo();

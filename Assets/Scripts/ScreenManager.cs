@@ -2,11 +2,11 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour {
+public class ScreenManager : MonoBehaviour {
 
 	void Start()
 	{
-		Game.gameManager = this;
+		Game.screenManager = this;
 	}
 
 	public void QuitToMenu()
@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour {
 	{
 		Game.gameOver = true;
 		CleanUp();
-		if(player > 1)
+		if(player > 0)
 			SceneManager.LoadScene("WinP2");
 		else
 			SceneManager.LoadScene("WinP1");
