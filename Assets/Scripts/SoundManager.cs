@@ -11,6 +11,7 @@ public class LoopingMusicTheme {
 
 public class SoundManager : MonoBehaviour {
 
+	public bool gameAudio = false;
 	public float minPitch;
 	public float maxPitch;
 
@@ -36,12 +37,28 @@ public class SoundManager : MonoBehaviour {
 	{
 		if(instance != null)
 		{
-			instance.PlayCenterMusic(1);
-			Destroy(instance.gameObject);
+			if(this.gameAudio)
+			{
+				Game.soundManager = instance;
+				instance.PlayCenterMusic(1);	
+			}
+			else
+				instance.PlayCenterMusic(0);	
+			Destroy(this.gameObject);
 		}
-		instance = this;
-		PlayCenterMusic(0);
-		DontDestroyOnLoad(this);
+		else
+		{
+			instance = this;
+			DontDestroyOnLoad(this);
+
+			if(this.gameAudio)
+			{
+				Game.soundManager = instance;
+				PlayCenterMusic(1);
+			}
+			else
+				PlayCenterMusic(0);
+		}
 	}
 
 	void Start(){

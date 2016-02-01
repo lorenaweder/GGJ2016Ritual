@@ -953,6 +953,18 @@ Prefab:
       propertyPath: playerHitEnemy
       value: 
       objectReference: {fileID: 791314430}
+    - target: {fileID: 2355160, guid: 4b910e4a67ce23549ac3f2544d358485, type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2391926, guid: 4b910e4a67ce23549ac3f2544d358485, type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2365422, guid: 4b910e4a67ce23549ac3f2544d358485, type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4b910e4a67ce23549ac3f2544d358485, type: 2}
   m_IsPrefabParent: 0
@@ -994,6 +1006,10 @@ Prefab:
     - target: {fileID: 447230, guid: 1e7647fbebde5cd46a0de34514c6301d, type: 2}
       propertyPath: m_RootOrder
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 11459788, guid: 1e7647fbebde5cd46a0de34514c6301d, type: 2}
+      propertyPath: gameAudio
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1e7647fbebde5cd46a0de34514c6301d, type: 2}

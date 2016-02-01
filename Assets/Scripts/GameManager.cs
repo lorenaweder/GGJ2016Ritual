@@ -11,16 +11,25 @@ public class GameManager : MonoBehaviour {
 
 	public void QuitToMenu()
 	{
+		CleanUp();
 		SceneManager.LoadScene("Menu");
 	}
 
 	public void Lost(float player)
 	{
-		Debug.Log("dafuwasdasdkjhsadkjhsadjkashdkjhaskdjhkasjdhka");
 		Game.gameOver = true;
+		CleanUp();
 		if(player > 1)
 			SceneManager.LoadScene("WinP2");
 		else
 			SceneManager.LoadScene("WinP1");
+	}
+
+	void CleanUp()
+	{
+		Game.attackParamsByType = null;
+		Game.defenseParamsByType  = null;
+		Game.runeByLetter  = null;
+		Game.attackByType = null;
 	}
 }

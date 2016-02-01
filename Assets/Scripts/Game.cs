@@ -12,18 +12,22 @@ public class Game : MonoBehaviour {
 	public ADParams fireAttackParams, waterAttackParams, airAttackParams, earthAttackParams;
 	public ADParams fireDefenseParams, waterDefenseParams, airDefenseParams, earthDefenseParams;
 
-	public static Dictionary<Elements, ADParams> attackParamsByType = new Dictionary<Elements, ADParams>();
-	public static Dictionary<Elements, ADParams> defenseParamsByType = new Dictionary<Elements, ADParams>();
-	public static Dictionary<Letters, Sprite> runeByLetter = new Dictionary<Letters, Sprite>();
-	public static Dictionary<Elements, Sprite> attackByType = new Dictionary<Elements, Sprite>();
+	public static Dictionary<Elements, ADParams> attackParamsByType;
+	public static Dictionary<Elements, ADParams> defenseParamsByType;
+	public static Dictionary<Letters, Sprite> runeByLetter;
+	public static Dictionary<Elements, Sprite> attackByType;
 
 	public static SoundManager soundManager;
 	public static GameManager gameManager;
 
-	void Start()
-	{
-		soundManager = FindObjectOfType<SoundManager>();
-		
+	void Awake()
+	{	
+	
+		attackParamsByType = new Dictionary<Elements, ADParams>();
+		defenseParamsByType = new Dictionary<Elements, ADParams>();
+		runeByLetter = new Dictionary<Letters, Sprite>();
+		attackByType = new Dictionary<Elements, Sprite>();
+
 		runeByLetter.Add(Letters.NONE, emptyRune);
 		runeByLetter.Add(Letters.ATTACK, attackRune);
 		runeByLetter.Add(Letters.DEFEND, defenseRune);
@@ -46,8 +50,6 @@ public class Game : MonoBehaviour {
 		defenseParamsByType.Add(Elements.WATER, waterDefenseParams);
 		defenseParamsByType.Add(Elements.AIR, airDefenseParams);
 		defenseParamsByType.Add(Elements.EARTH, earthDefenseParams);
-
-		soundManager.PlayCenterMusic(1);
 
 	}
 
